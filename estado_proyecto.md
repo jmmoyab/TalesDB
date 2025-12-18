@@ -260,7 +260,13 @@ app/src/main/
 
 ## 📝 Historial de Cambios
 
-**18 Dic 2025:**
+**18 Dic 2025 (sesión tarde):**
+- ✅ Configurado Git localmente
+- ✅ Creado .gitignore con exclusiones apropiadas
+- ✅ Primer commit realizado (19b4f4c): 75 archivos, 7,825 líneas de código
+- ✅ Documentación actualizada
+
+**18 Dic 2025 (sesión mañana):**
 - ✅ Implementado CRUD completo para Books, Series y Movies
 - ✅ Creados BookFormDialog, SerieFormDialog, MovieFormDialog
 - ✅ Agregados botones FAB con PopupMenu en todos los fragmentos
@@ -611,6 +617,7 @@ buildTypes {
 9. **CRUD completo (Create, Read, Update, Delete)** ✅
 10. **Formularios con validación** ✅
 11. **Editar y eliminar con confirmación** ✅
+12. **Git configurado localmente** ✅
 
 ### 🎯 Para empezar la próxima sesión:
 
@@ -623,11 +630,9 @@ buildTypes {
 4. Migrar datos existentes del usuario
 
 **Opción B: Git y GitHub**
-1. Inicializar repositorio Git
-2. Crear cuenta GitHub si no existe
-3. Subir proyecto a GitHub
-4. Configurar .gitignore
-5. Documentar en README.md
+✅ Git configurado localmente (commit: 19b4f4c)
+- Próximo paso opcional: Subir a GitHub para backup en la nube
+- O continuar solo con Git local
 
 **Opción C: Mejoras de UI**
 1. Mejorar diseño de cards
