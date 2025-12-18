@@ -9,7 +9,7 @@ Crear una aplicación Android para llevar un registro del progreso de libros, se
 
 **Fecha última actualización:** 18 de Diciembre de 2025
 **IDE utilizado:** AndroidIDE (https://m.androidide.com/)
-**Estado:** ✅ **FUNCIONAL - CRUD completo implementado para Books, Series y Movies**
+**Estado:** ✅ **FUNCIONAL - CRUD completo + Estadísticas implementadas**
 
 ---
 
@@ -21,8 +21,8 @@ Crear una aplicación Android para llevar un registro del progreso de libros, se
 |------------|-------------|--------|
 | MainActivity.kt | Actividad principal con navegación entre fragmentos | ✅ Completo |
 | activity_main.xml | Layout con FrameLayout y BottomNavigationView | ✅ Completo |
-| bottom_nav_menu.xml | Menú inferior con 3 pestañas (Libros, Series, Películas) | ✅ Completo |
-| Iconos | ic_book.xml, ic_tv.xml, ic_movie.xml | ✅ Completo |
+| bottom_nav_menu.xml | Menú inferior con 4 pestañas (Libros, Series, Películas, Estadísticas) | ✅ Completo |
+| Iconos | ic_book.xml, ic_tv.xml, ic_movie.xml, ic_stats.xml | ✅ Completo |
 
 ### II. Modelo de Datos (SQLite)
 
@@ -106,6 +106,7 @@ Crear una aplicación Android para llevar un registro del progreso de libros, se
 | BooksFragment.kt | Fragmento de libros con RecyclerView + CRUD completo | ✅ Completo |
 | SeriesFragment.kt | Fragmento de series con RecyclerView + CRUD completo | ✅ Completo |
 | MoviesFragment.kt | Fragmento de películas con RecyclerView + CRUD completo | ✅ Completo |
+| StatsFragment.kt | Fragmento de estadísticas con resumen y contadores | ✅ Completo |
 | BookAdapter.kt | Adaptador con click listeners (edit/delete) | ✅ Completo |
 | SerieAdapter.kt | Adaptador con click listeners (edit/delete) | ✅ Completo |
 | MovieAdapter.kt | Adaptador con click listeners (edit/delete) | ✅ Completo |
@@ -113,6 +114,7 @@ Crear una aplicación Android para llevar un registro del progreso de libros, se
 | fragment_books.xml | Layout con RecyclerView + FAB | ✅ Completo |
 | fragment_series.xml | Layout con RecyclerView + FAB | ✅ Completo |
 | fragment_movies.xml | Layout con RecyclerView + FAB | ✅ Completo |
+| fragment_stats.xml | Layout con ScrollView y cards de estadísticas | ✅ Completo |
 
 ### V. Formularios CRUD
 
@@ -264,6 +266,13 @@ app/src/main/
 - ✅ Configurado Git localmente
 - ✅ Creado .gitignore con exclusiones apropiadas
 - ✅ Primer commit realizado (19b4f4c): 75 archivos, 7,825 líneas de código
+- ✅ **Implementada pantalla de Estadísticas (commit 7f2b681)**
+  - Creado StatsFragment con diseño en MaterialCards
+  - Agregada 4ta pestaña de navegación
+  - Contadores totales (libros, series, películas)
+  - Estadísticas por estado para cada tipo
+  - Actividad por año (combinada)
+  - Reutiliza funciones DAOs existentes
 - ✅ Documentación actualizada
 
 **18 Dic 2025 (sesión mañana):**
@@ -618,6 +627,7 @@ buildTypes {
 10. **Formularios con validación** ✅
 11. **Editar y eliminar con confirmación** ✅
 12. **Git configurado localmente** ✅
+13. **Pantalla de Estadísticas** ✅
 
 ### 🎯 Para empezar la próxima sesión:
 
@@ -639,6 +649,19 @@ buildTypes {
 2. Agregar colores por estado
 3. Iconos personalizados
 4. Animaciones básicas
+
+**Opción D: Estadísticas**
+✅ Implementada (commit: 7f2b681)
+- Pantalla con 4 secciones de estadísticas
+- Resumen general con totales
+- Estados por tipo de contenido
+- Actividad por año
+
+**Opción E: Búsqueda y Filtros**
+1. Búsqueda por título en cada sección
+2. Filtros por estado
+3. Filtros por autor/plataforma
+4. Ordenamiento personalizado
 
 ### 📝 Preguntas para decidir:
 
