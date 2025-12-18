@@ -14,4 +14,9 @@
         android:id="@+id/nav_movies"
         android:icon="@drawable/ic_movie"
         android:title="Películas" />
+
+    <item
+        android:id="@+id/nav_stats"
+        android:icon="@drawable/ic_stats"
+        android:title="Estadísticas" />
 </menu>

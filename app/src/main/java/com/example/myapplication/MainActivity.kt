@@ -8,6 +8,7 @@ import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.ui.BooksFragment
 import com.example.myapplication.ui.SeriesFragment
 import com.example.myapplication.ui.MoviesFragment
+import com.example.myapplication.ui.StatsFragment
 
 public class MainActivity : AppCompatActivity() {
 
@@ -43,6 +44,10 @@ public class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_movies -> {
                     loadFragment(MoviesFragment())
+                    true
+                }
+                R.id.nav_stats -> {
+                    loadFragment(StatsFragment())
                     true
                 }
                 else -> false
