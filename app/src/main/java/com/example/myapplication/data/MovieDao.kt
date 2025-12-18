@@ -174,6 +174,31 @@ class MovieDao(private val db: SQLiteDatabase) {
         return stats
     }
 
+    // Estadísticas: Películas vistas por mes
+    fun getCountByMonth(): Map<String, Int> {
+        val stats = mutableMapOf<String, Int>()
+        val cursor = db.rawQuery(
+            """
+            SELECT strftime('%Y-%m', fecha_visionado) as month, COUNT(*) as count
+            FROM $TABLE_NAME
+            WHERE fecha_visionado IS NOT NULL
+            GROUP BY month
+            ORDER BY month DESC
+            """.trimIndent(),
+            null
+        )
+        cursor.use {
+            if (it.moveToFirst()) {
+                do {
+                    val month = it.getString(0)
+                    val count = it.getInt(1)
+                    stats[month] = count
+                } while (it.moveToNext())
+            }
+        }
+        return stats
+    }
+
     // Estadísticas: Total de películas por estado
     fun getCountByEstado(): Map<MovieStatus, Int> {
         val stats = mutableMapOf<MovieStatus, Int>()
