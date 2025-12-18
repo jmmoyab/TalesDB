@@ -1,0 +1,36 @@
+# Android
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+bin/
+gen/
+out/
+build/
+.gradle/
+local.properties
+
+# IDE
+.idea/
+*.iml
+.androidide/
+
+# Archivos temporales
+*.log
+*.bak
+*.old
+*.tmp
+*.swp
+*~
+
+# Base de datos local (desarrollo)
+*.db
+*.db-shm
+*.db-wal
+
+# Archivos de exportacion temporal
+*.txt
+
+# Gradle Wrapper (opcional - algunos prefieren incluirlo)
+# gradle/wrapper/gradle-wrapper.jar

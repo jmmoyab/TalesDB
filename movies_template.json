@@ -1,0 +1,37 @@
+[
+  {
+    "titulo": "Conclave",
+    "año": 2024,
+    "cadena": "Movistar",
+    "estado": "VISTA",
+    "duracion_minutos": "120 min",
+    "enlace_web": "https://m.filmaffinity.com/es/film159138.html"
+  },
+  {
+    "titulo": "La infiltrada",
+    "año": 2024,
+    "cadena": "Movistar",
+    "estado": "VISTA",
+    "duracion_minutos": "118 min",
+    "fecha_inicio": "2025/03/28",
+    "enlace_web": "https://m.filmaffinity.com/es/film932478.html"
+  },
+  {
+    "titulo": "Indiana Jones y el dial del destino",
+    "año": 2023,
+    "cadena": "Disney",
+    "estado": "VISTA",
+    "duracion_minutos": "154 min",
+    "fecha_inicio": "2024/09/23",
+    "enlace_web": "https://m.filmaffinity.com/es/film989177.html"
+  },
+  {
+    "titulo": "Red One",
+    "año": 2024,
+    "cadena": "Prime Video",
+    "estado": "VISTA",
+    "duracion_minutos": "123 min.",
+    "fecha_inicio": "2025/12/24",
+    "enlace_web": "https://m.filmaffinity.com/es/film883220.html"
+  }
+]
