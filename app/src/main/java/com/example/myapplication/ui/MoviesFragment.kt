@@ -29,10 +29,42 @@ class MoviesFragment : Fragment() {
         contentManager = ContentManager(requireContext())
 
         setupRecyclerView()
+        setupSearchView()
         setupFab()
         loadData()
 
         return binding.root
+    }
+
+    private fun setupSearchView() {
+        binding.searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                searchMovies(newText ?: "")
+                return true
+            }
+        })
+    }
+
+    private fun searchMovies(query: String) {
+        val movies = if (query.isBlank()) {
+            contentManager.movieDao.getAll()
+        } else {
+            contentManager.movieDao.search(query)
+        }
+        adapter.updateItems(movies)
+
+        if (movies.isEmpty()) {
+            binding.emptyText.text = if (query.isBlank()) "No hay películas" else "No se encontraron resultados"
+            binding.emptyText.visibility = View.VISIBLE
+            binding.recyclerView.visibility = View.GONE
+        } else {
+            binding.emptyText.visibility = View.GONE
+            binding.recyclerView.visibility = View.VISIBLE
+        }
     }
 
     private fun setupRecyclerView() {
