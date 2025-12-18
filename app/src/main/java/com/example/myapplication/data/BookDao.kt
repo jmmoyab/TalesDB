@@ -127,6 +127,29 @@ class BookDao(private val db: SQLiteDatabase) {
         return books
     }
 
+    // Buscar libros por título o autor
+    fun search(query: String): List<Book> {
+        val books = mutableListOf<Book>()
+        val searchQuery = "%$query%"
+        val cursor = db.query(
+            TABLE_NAME,
+            null,
+            "titulo LIKE ? OR autor LIKE ? OR saga_titulo LIKE ?",
+            arrayOf(searchQuery, searchQuery, searchQuery),
+            null,
+            null,
+            "fecha_creacion DESC"
+        )
+        cursor.use {
+            if (it.moveToFirst()) {
+                do {
+                    books.add(cursorToBook(it))
+                } while (it.moveToNext())
+            }
+        }
+        return books
+    }
+
     // Obtener libros por autor
     fun getByAutor(autor: String): List<Book> {
         val books = mutableListOf<Book>()

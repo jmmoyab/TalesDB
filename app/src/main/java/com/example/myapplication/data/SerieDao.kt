@@ -133,6 +133,29 @@ class SerieDao(private val db: SQLiteDatabase) {
         return series
     }
 
+    // Buscar series por título o plataforma
+    fun search(query: String): List<Serie> {
+        val series = mutableListOf<Serie>()
+        val searchQuery = "%$query%"
+        val cursor = db.query(
+            TABLE_NAME,
+            null,
+            "titulo LIKE ? OR plataformas LIKE ?",
+            arrayOf(searchQuery, searchQuery),
+            null,
+            null,
+            "fecha_creacion DESC"
+        )
+        cursor.use {
+            if (it.moveToFirst()) {
+                do {
+                    series.add(cursorToSerie(it))
+                } while (it.moveToNext())
+            }
+        }
+        return series
+    }
+
     // Estadísticas: Series vistas por año
     fun getCountByYear(): Map<String, Int> {
         val stats = mutableMapOf<String, Int>()

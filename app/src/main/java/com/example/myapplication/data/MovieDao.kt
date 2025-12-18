@@ -149,6 +149,29 @@ class MovieDao(private val db: SQLiteDatabase) {
         return movies
     }
 
+    // Buscar películas por título, saga o plataforma
+    fun search(query: String): List<Movie> {
+        val movies = mutableListOf<Movie>()
+        val searchQuery = "%$query%"
+        val cursor = db.query(
+            TABLE_NAME,
+            null,
+            "titulo LIKE ? OR plataformas LIKE ? OR saga_titulo LIKE ?",
+            arrayOf(searchQuery, searchQuery, searchQuery),
+            null,
+            null,
+            "fecha_creacion DESC"
+        )
+        cursor.use {
+            if (it.moveToFirst()) {
+                do {
+                    movies.add(cursorToMovie(it))
+                } while (it.moveToNext())
+            }
+        }
+        return movies
+    }
+
     // Estadísticas: Películas vistas por año
     fun getCountByYear(): Map<String, Int> {
         val stats = mutableMapOf<String, Int>()
