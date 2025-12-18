@@ -266,13 +266,17 @@ app/src/main/
 - ✅ Configurado Git localmente
 - ✅ Creado .gitignore con exclusiones apropiadas
 - ✅ Primer commit realizado (19b4f4c): 75 archivos, 7,825 líneas de código
-- ✅ **Implementada pantalla de Estadísticas (commit 7f2b681)**
-  - Creado StatsFragment con diseño en MaterialCards
-  - Agregada 4ta pestaña de navegación
-  - Contadores totales (libros, series, películas)
-  - Estadísticas por estado para cada tipo
-  - Actividad por año (combinada)
-  - Reutiliza funciones DAOs existentes
+- ✅ **Implementada pantalla de Estadísticas completa (commits 7f2b681, 9eb748b, 0c620db)**
+  - Creado StatsFragment con 9 secciones de estadísticas
+  - Agregada 4ta pestaña de navegación "Estadísticas"
+  - Resumen general con contadores totales
+  - Estadísticas por estado (libros, series, películas)
+  - Estadísticas por año separadas por tipo
+  - Estadísticas por mes separadas por tipo (últimos 12 meses)
+  - Formato mejorado: "Nov 2023" en lugar de "2023-11"
+  - Agregadas funciones getCountByMonth() en todos los DAOs
+  - Reutiliza y extiende funciones DAOs existentes
+- ✅ Fix: Colores faltantes en colors.xml (commit 54de0df)
 - ✅ Documentación actualizada
 
 **18 Dic 2025 (sesión mañana):**
