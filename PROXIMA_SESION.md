@@ -1,8 +1,8 @@
 # 🚀 Preparado para la Próxima Sesión
 
-**Fecha:** 18 de Diciembre de 2025
-**Estado actual:** ✅ App funcional - VERSIÓN 1.0 COMPLETA
-**Prioridad:** Mejoras opcionales para versión 1.1 (filtros, ordenamiento, exportar/importar)
+**Fecha:** 19 de Diciembre de 2025
+**Estado actual:** ✅ App funcional - VERSIÓN 1.0 COMPLETA + Exportar/Importar
+**Prioridad:** Mejoras para versión 1.1 (Backup BD, Modo Oscuro, Filtros, Configuración)
 
 ---
 
@@ -29,18 +29,31 @@
   - ✅ Pantalla de estadísticas con 9 secciones
   - ✅ Resumen general con totales
   - ✅ Contadores por estado, año y mes
+- ✅ **EXPORTAR/IMPORTAR DATOS:**
+  - ✅ Exportar a JSON (backup completo)
+  - ✅ Exportar a TXT (reporte legible)
+  - ✅ Importar desde JSON (con validación)
+  - ✅ Compartir archivos exportados
+  - ✅ Borrar todos los datos
+- ✅ **CONFIGURACIÓN:**
+  - ✅ Pantalla de configuración (5ta pestaña)
+  - ✅ Estadísticas en tiempo real
+  - ✅ Gestión de archivos exportados
+  - ✅ Acerca de la app
 
 ---
 
 ## 🎯 Tareas Principales para la Próxima Sesión
 
-### ✅ VERSIÓN 1.0 - COMPLETADA
+### ✅ VERSIÓN 1.0 - COMPLETADA (19 Dic 2025)
 
 **Funcionalidades implementadas:**
 - ✅ CRUD completo (Crear, Leer, Actualizar, Eliminar)
 - ✅ Búsqueda en tiempo real en las 3 secciones
 - ✅ Estadísticas completas (resumen, por estado, por año, por mes)
-- ✅ Navegación con 4 pestañas
+- ✅ **Exportar/Importar JSON y TXT** (NUEVO)
+- ✅ **Pantalla de Configuración** (NUEVO)
+- ✅ Navegación con 5 pestañas
 - ✅ Persistencia SQLite
 - ✅ Formularios con validación
 
@@ -52,95 +65,142 @@
 
 ---
 
-### OPCIÓN A: Filtros por Estado (Prioridad ALTA - 30-45 min)
+## 🚀 Tareas Pendientes para Versión 1.1
 
-**Objetivo:** Complementar la búsqueda con filtros por estado
+### PRIORIDAD 1: Backup de Base de Datos SQLite (30-45 min)
+
+**Objetivo:** Complementar exportación JSON con backup directo del archivo .db
 
 **Implementación:**
-1. Agregar chips o botones de filtro en cada fragmento
-2. Estados disponibles:
-   - **Libros:** REGISTRADO, EN_CURSO, PENDIENTE, TODOS
-   - **Series:** EN_CURSO, PENDIENTE, VISTA, MAS_TEMPORADAS_A_LA_VISTA, TODOS
-   - **Películas:** EN_CURSO, PENDIENTE, VISTA, TODOS
-3. Combinar filtro con búsqueda existente
-4. Permitir "Todos" para desactivar filtro
+1. Crear `BackupHelper.kt` en package `data`
+2. Función `backupDatabase()`:
+   - Copiar archivo `content_manager.db` a directorio de backups
+   - Nombre con timestamp: `backup_20251219_153045.db`
+   - Cerrar conexiones antes de copiar
+3. Función `restoreDatabase()`:
+   - Seleccionar archivo `.db` para restaurar
+   - Validar integridad del archivo
+   - Reemplazar BD actual (con confirmación)
+   - Reiniciar app para aplicar cambios
+4. Función `listBackups()`:
+   - Listar archivos `.db` disponibles
+   - Mostrar fecha y tamaño
 
-**Archivos a modificar:**
-- `fragment_books.xml`, `fragment_series.xml`, `fragment_movies.xml` - Agregar ChipGroup
-- `BooksFragment.kt`, `SeriesFragment.kt`, `MoviesFragment.kt` - Implementar lógica de filtro
-- Los DAOs ya tienen funciones `getByEstado()` que se pueden reutilizar
+**Ventajas sobre JSON:**
+- Más rápido (copia directa del archivo)
+- Mantiene IDs originales
+- Incluye toda la metadata
+
+**Agregar en SettingsFragment:**
+- Botón "Backup de Base de Datos"
+- Botón "Restaurar desde Backup"
+- Mostrar lista de backups disponibles
+
+**Directorio:** `/Android/data/.../files/backups/db/`
 
 ---
 
-### OPCIÓN B: Ordenamiento Personalizado (Prioridad MEDIA - 30-45 min)
+### PRIORIDAD 2: Modo Oscuro/Claro (30-45 min)
 
-**Objetivo:** Permitir ordenar items por diferentes criterios
+**Objetivo:** Implementar tema oscuro/claro con preferencia persistente
 
 **Implementación:**
-1. Menú de opciones en cada fragmento (icono de ordenar)
-2. Opciones de ordenamiento:
-   - Por fecha de creación (más reciente primero)
-   - Por fecha de inicio
-   - Por título (A-Z o Z-A)
-   - Por estado
+1. Usar `AppCompatDelegate.setDefaultNightMode()`
+2. Tres opciones:
+   - 🌙 **Modo Oscuro**
+   - ☀️ **Modo Claro**
+   - 🔄 **Automático** (según sistema)
 3. Guardar preferencia en SharedPreferences
-4. Modificar consultas SQL con ORDER BY
+4. Aplicar tema al iniciar MainActivity
 
 **Archivos a crear/modificar:**
-- Agregar funciones en DAOs con parámetro ORDER BY
-- Modificar fragmentos para mostrar menú de ordenamiento
-- Agregar preferencias persistentes
+- `MainActivity.kt` - Aplicar tema en `onCreate()`
+- `SettingsFragment.kt` - RadioGroup o Spinner para elegir tema
+- `fragment_settings.xml` - Agregar sección "Apariencia"
+- `PreferencesManager.kt` (opcional) - Gestionar SharedPreferences
 
----
-
-### OPCIÓN C: Exportar/Importar Datos JSON (Prioridad MEDIA - 45-60 min)
-
-**Estado:** ✅ Plantillas JSON creadas y listas
-
-**Archivos de plantilla creados:**
-- ✅ `books_template.json` - Con 5 ejemplos y bloque vacío
-- ✅ `series_template.json` - Con 5 ejemplos y bloque vacío
-- ✅ `movies_template.json` - Con 5 ejemplos y bloque vacío
-
-**Tareas pendientes:**
-
-#### 1. Usuario prepara datos
-- Editar plantillas con tus libros/series/películas
-- Guardar como: `mis_libros.json`, `mis_series.json`, `mis_peliculas.json`
-- Colocar en: `/storage/emulated/0/AndroidIDEProjects/My Application/`
-
-#### 2. Implementar función de importación
-**Crear:** `ImportHelper.kt` en package `data`
-
+**Código de ejemplo:**
 ```kotlin
-class ImportHelper(private val context: Context) {
-    private val contentManager = ContentManager(context)
-    private val gson = Gson()
-
-    fun importBooks(jsonFile: File): Int {
-        // Leer archivo JSON
-        // Parsear con Gson
-        // Insertar cada libro en BD
-        // Retornar cantidad importada
-    }
-
-    fun importSeries(jsonFile: File): Int { ... }
-    fun importMovies(jsonFile: File): Int { ... }
-
-    fun importAll() {
-        // Importar los 3 tipos
-        // Mostrar resumen
-    }
+// Aplicar tema
+when (preferencia) {
+    "oscuro" -> AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
+    "claro" -> AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
+    "auto" -> AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
 }
 ```
 
-#### 3. Agregar botón de importación
-- Opción en menú o botón en cada fragmento
-- Selector de archivo JSON
-- Mostrar progreso
-- Confirmar cantidad importada
+**UI en Settings:**
+- Card "Apariencia"
+- RadioButtons: Oscuro, Claro, Automático
+- Vista previa del cambio inmediato
 
-**Tiempo estimado:** 30-45 minutos
+---
+
+### PRIORIDAD 3: Filtros por Estado (30-45 min)
+
+**Objetivo:** Complementar búsqueda con filtros por estado
+
+**Implementación:**
+1. Agregar `ChipGroup` en layouts de fragmentos
+2. Un Chip por cada estado + chip "TODOS"
+3. Combinar filtro con búsqueda existente
+4. Mantener filtro al cambiar de pestaña (opcional)
+
+**Estados por tipo:**
+- **Libros:** LEÍDO, EN_CURSO, PENDIENTE, TODOS
+- **Series:** TERMINADA, EN_CURSO, PENDIENTE, EN_ESPERA_TEMPORADA, TODOS
+- **Películas:** VISTA, EN_CURSO, PENDIENTE, TODOS
+
+**Archivos a modificar:**
+- `fragment_books.xml`, `fragment_series.xml`, `fragment_movies.xml`
+- `BooksFragment.kt`, `SeriesFragment.kt`, `MoviesFragment.kt`
+- Los DAOs ya tienen `getByEstado()` listo para usar
+
+**Funcionalidad:**
+- Click en chip → Filtrar por ese estado
+- Click en "TODOS" → Mostrar todos
+- Combinar con búsqueda: buscar dentro de items filtrados
+- Chips con colores según estado (verde=completado, amarillo=en curso, etc.)
+
+---
+
+### PRIORIDAD 4: Configuración Avanzada (45-60 min)
+
+**Objetivo:** Opciones adicionales de configuración
+
+**Implementación:**
+
+#### 4.1. Directorio de Trabajo Personalizado
+- Permitir al usuario elegir dónde guardar exports/backups
+- Usar `Environment.getExternalStorageDirectory()` + path personalizado
+- Guardar preferencia en SharedPreferences
+- Crear directorio si no existe
+
+#### 4.2. Formato de Fecha Preferido
+- Opción para elegir formato de fecha
+- Opciones: DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD
+- Aplicar en toda la app (fragmentos, diálogos)
+- Guardar en SharedPreferences
+
+#### 4.3. Idioma (opcional)
+- Español (actual)
+- Inglés (traducir strings.xml)
+- Guardar preferencia
+
+#### 4.4. Configuración de Exportación
+- Incluir notas en exportación (sí/no)
+- Incluir enlaces web (sí/no)
+- Formato de nombres de archivo
+- Comprimir exports en ZIP (opcional)
+
+**Archivos a crear:**
+- `PreferencesManager.kt` - Gestionar SharedPreferences
+- `DateFormatHelper.kt` - Formatear fechas según preferencia
+
+**Agregar en SettingsFragment:**
+- Card "Configuración Avanzada"
+- Opciones organizadas por categoría
+- Reset a valores por defecto
 
 ---
 

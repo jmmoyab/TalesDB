@@ -7,9 +7,9 @@ Crear una aplicación Android para llevar un registro del progreso de libros, se
 
 ## 🛠️ Estado Actual del Proyecto
 
-**Fecha última actualización:** 18 de Diciembre de 2025
+**Fecha última actualización:** 19 de Diciembre de 2025
 **IDE utilizado:** AndroidIDE (https://m.androidide.com/)
-**Estado:** ✅ **FUNCIONAL - CRUD completo + Estadísticas + Búsqueda en tiempo real**
+**Estado:** ✅ **VERSIÓN 1.0 COMPLETA - CRUD + Estadísticas + Búsqueda + Exportar/Importar**
 
 ---
 
@@ -158,7 +158,52 @@ Crear una aplicación Android para llevar un registro del progreso de libros, se
 - **Series:** Título, Plataforma
 - **Películas:** Título, Plataforma
 
-### VII. Dependencias Configuradas
+### VII. Exportación e Importación de Datos
+
+| Archivo | Descripción | Estado |
+|---------|-------------|--------|
+| ExportHelper.kt | Exportar datos a JSON y TXT | ✅ Completo |
+| ImportHelper.kt | Importar datos desde JSON | ✅ Completo |
+| SettingsFragment.kt | Pantalla de configuración | ✅ Completo |
+| fragment_settings.xml | UI de configuración | ✅ Completo |
+| provider_paths.xml | FileProvider para compartir archivos | ✅ Completo |
+
+**Funcionalidades de exportación:**
+- ✅ **Exportar a JSON:** Backup completo con estructura y metadata
+- ✅ **Exportar a TXT:** Reporte legible con formato bonito y emojis
+- ✅ **Compartir archivos:** Via WhatsApp, Email, etc. (FileProvider)
+- ✅ **Directorio organizado:** `/Android/data/.../files/exports/`
+- ✅ **Nombres con timestamp:** `content_export_20251219_105338.json`
+
+**Funcionalidades de importación:**
+- ✅ **Importar desde JSON:** Restaurar datos desde archivo exportado
+- ✅ **Validación previa:** Valida formato JSON antes de importar
+- ✅ **Vista previa:** Muestra qué contiene el archivo antes de importar
+- ✅ **Dos modos:** Agregar (suma a datos existentes) o Reemplazar (borra todo)
+- ✅ **Confirmación doble:** Para acciones destructivas (reemplazar, borrar)
+- ✅ **Comparación:** Compara datos del archivo con datos actuales
+- ✅ **Lista de archivos:** Muestra archivos JSON disponibles para importar
+
+**Gestión de datos:**
+- ✅ **Borrar todos los datos:** Con confirmación doble
+- ✅ **Ver directorio:** Información sobre archivos exportados
+- ✅ **Estadísticas en tiempo real:** Muestra totales actuales en BD
+- ✅ **Acerca de:** Información de la app y versión
+
+### VIII. Pantalla de Configuración
+
+| Elemento | Descripción | Estado |
+|----------|-------------|--------|
+| 5ta pestaña de navegación | "Configuración" en BottomNav | ✅ Completo |
+| Exportar a JSON | Botón para exportar backup completo | ✅ Completo |
+| Exportar a TXT | Botón para exportar reporte legible | ✅ Completo |
+| Importar desde JSON | Botón con selector de archivos | ✅ Completo |
+| Ver directorio | Info sobre archivos exportados | ✅ Completo |
+| Borrar datos | Botón con doble confirmación | ✅ Completo |
+| Acerca de | Info de la aplicación | ✅ Completo |
+| Estadísticas | Totales de BD en tiempo real | ✅ Completo |
+
+### IX. Dependencias Configuradas
 
 ```kotlin
 // Core Android
@@ -201,18 +246,21 @@ implementation("com.google.code.gson:gson:2.10.1")
 
 ## 🚀 Próximos Pasos Pendientes
 
-### ✅ Completado:
+### ✅ Completado - Versión 1.0:
 1. ✅ **Formulario para agregar items** - FAB + diálogos implementados
 2. ✅ **Editar items** - Click en card implementado
 3. ✅ **Eliminar items** - Long-click con confirmación implementado
 4. ✅ **Validación de formularios** - Campos obligatorios validados
 5. ✅ **Búsqueda en tiempo real** - SearchView implementado en las 3 secciones
 6. ✅ **Estadísticas completas** - Resumen, por estado, por año, por mes
+7. ✅ **Exportar/Importar JSON y TXT** - Backup completo y reporte legible
+8. ✅ **Pantalla de Configuración** - 5ta pestaña con gestión de datos
 
-### Prioridad Media (Opcionales para v1.1):
-7. **Filtros por estado** - Filtrar items por EN_CURSO, PENDIENTE, VISTA, etc.
-8. **Ordenamiento** - Por fecha, título, estado
-9. **Exportar/Importar datos** - Backup en JSON
+### Prioridad Alta - Versión 1.1 (Próxima sesión):
+1. **Backup de Base de Datos SQLite** - Copia directa del archivo .db
+2. **Modo Oscuro/Claro** - Tema personalizable con preferencia persistente
+3. **Filtros por Estado** - ChipGroup para filtrar por estado
+4. **Configuración Avanzada** - Directorio personalizado, formato de fecha, etc.
 
 ### Prioridad Baja:
 10. **Detalles expandidos** - Pantalla de detalle al hacer click en un item
@@ -287,6 +335,17 @@ app/src/main/
 ---
 
 ## 📝 Historial de Cambios
+
+**19 Dic 2025:**
+- ✅ **Implementada exportación/importación de datos (commit 26ae799)**
+  - Creado ExportHelper.kt con exportación JSON y TXT
+  - Creado ImportHelper.kt con validación e importación
+  - Pantalla de Configuración completa (5ta pestaña)
+  - FileProvider configurado para compartir archivos
+  - Borrar todos los datos con confirmación doble
+  - Vista previa antes de importar
+  - Dos modos: Agregar o Reemplazar
+  - 16 archivos modificados, 1,686 líneas agregadas
 
 **18 Dic 2025 (sesión tarde - continuación):**
 - ✅ **Implementada búsqueda en tiempo real (commits 42bf136, 4e18869)**
@@ -737,15 +796,22 @@ buildTypes {
 
 ---
 
-**Estado:** ✅ **VERSIÓN 1.0 COMPLETA - FUNCIONAL Y USABLE**
+**Estado:** ✅ **VERSIÓN 1.0 COMPLETA - FUNCIONAL, USABLE Y CON BACKUP**
 
 **La app ya tiene:**
-- ✅ Navegación completa con 4 pestañas
+- ✅ Navegación completa con 5 pestañas
 - ✅ Persistencia SQLite
 - ✅ CRUD completo para Books, Series y Movies
 - ✅ Formularios de entrada con validación
 - ✅ Búsqueda en tiempo real en las 3 secciones
 - ✅ Estadísticas completas (resumen, por estado, por año, por mes)
+- ✅ **Exportar/Importar JSON y TXT**
+- ✅ **Pantalla de Configuración completa**
+- ✅ **Compartir archivos exportados**
 - ✅ Es completamente usable para gestionar contenido
 
-**Próxima sesión:** Mejoras opcionales (filtros por estado, ordenamiento, exportar/importar, UI, etc.)
+**Próxima sesión (Versión 1.1):**
+1. Backup de Base de Datos SQLite
+2. Modo Oscuro/Claro
+3. Filtros por Estado
+4. Configuración Avanzada
