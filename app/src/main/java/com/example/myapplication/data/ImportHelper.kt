@@ -2,167 +2,259 @@ package com.example.myapplication.data
 
 import android.content.Context
 import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
+import com.google.gson.JsonSyntaxException
 import java.io.File
+import java.io.FileReader
 
-class ImportHelper(private val contentManager: ContentManager) {
+class ImportHelper(private val context: Context) {
 
+    private val contentManager = ContentManager(context)
     private val gson = Gson()
 
-    // Clase temporal para parsear el JSON (con nombres de campos del JSON)
-    data class BookJson(
-        val titulo: String,
-        val autor: String? = null,
-        val estado: String,
-        val paginas_totales: Int? = null,
-        val saga_titulo: String? = null,
-        val saga_volumen: Any? = null,  // Puede ser Int, String, o null
-        val fecha_inicio: String? = null,
-        val fecha_fin: String? = null,
-        val enlace_web: String? = null
-    )
-
     /**
-     * Importar libros desde un archivo JSON
-     * @param jsonFile Archivo JSON con los libros
-     * @return Cantidad de libros importados
+     * Importar datos desde archivo JSON
+     * @param file Archivo JSON a importar
+     * @param mode Modo de importación (AGREGAR o REEMPLAZAR)
+     * @return Resultado de la importación
      */
-    fun importBooks(jsonFile: File): ImportResult {
-        if (!jsonFile.exists()) {
-            return ImportResult(
-                success = false,
-                imported = 0,
-                total = 0,
-                errors = listOf("Archivo no encontrado: ${jsonFile.path}")
-            )
-        }
-
-        try {
+    fun importFromJson(file: File, mode: ImportMode = ImportMode.AGREGAR): ImportResult {
+        return try {
             // Leer y parsear JSON
-            val json = jsonFile.readText()
-            val booksJson = gson.fromJson(json, Array<BookJson>::class.java)
+            val jsonData = FileReader(file).use { reader ->
+                gson.fromJson(reader, ExportData::class.java)
+            }
 
-            val errors = mutableListOf<String>()
-            var imported = 0
+            // Validar datos
+            if (jsonData == null) {
+                return ImportResult(
+                    success = false,
+                    message = "Error: El archivo JSON está vacío o es inválido",
+                    booksImported = 0,
+                    seriesImported = 0,
+                    moviesImported = 0
+                )
+            }
 
-            booksJson.forEachIndexed { index, bookJson ->
+            // Si el modo es REEMPLAZAR, borrar datos existentes
+            if (mode == ImportMode.REEMPLAZAR) {
+                clearAllData()
+            }
+
+            // Importar libros
+            var booksImported = 0
+            jsonData.books.forEach { book ->
                 try {
-                    // Convertir de BookJson a Book
-                    val book = convertToBook(bookJson)
-
-                    // Insertar en BD
-                    contentManager.bookDao.insert(book)
-                    imported++
+                    // Crear libro sin ID (la BD asignará uno nuevo)
+                    val newBook = book.copy(id = 0)
+                    contentManager.bookDao.insert(newBook)
+                    booksImported++
                 } catch (e: Exception) {
-                    errors.add("Error en libro ${index + 1} (${bookJson.titulo}): ${e.message}")
+                    // Continuar con el siguiente si hay error
                 }
             }
 
-            return ImportResult(
-                success = errors.isEmpty(),
-                imported = imported,
-                total = booksJson.size,
-                errors = errors
+            // Importar series
+            var seriesImported = 0
+            jsonData.series.forEach { serie ->
+                try {
+                    val newSerie = serie.copy(id = 0)
+                    contentManager.serieDao.insert(newSerie)
+                    seriesImported++
+                } catch (e: Exception) {
+                    // Continuar con el siguiente
+                }
+            }
+
+            // Importar películas
+            var moviesImported = 0
+            jsonData.movies.forEach { movie ->
+                try {
+                    val newMovie = movie.copy(id = 0)
+                    contentManager.movieDao.insert(newMovie)
+                    moviesImported++
+                } catch (e: Exception) {
+                    // Continuar con el siguiente
+                }
+            }
+
+            // Resultado exitoso
+            val totalImported = booksImported + seriesImported + moviesImported
+            val message = if (mode == ImportMode.REEMPLAZAR) {
+                "Importación completa: $totalImported items importados (datos anteriores reemplazados)"
+            } else {
+                "Importación completa: $totalImported items agregados"
+            }
+
+            ImportResult(
+                success = true,
+                message = message,
+                booksImported = booksImported,
+                seriesImported = seriesImported,
+                moviesImported = moviesImported
             )
 
-        } catch (e: Exception) {
-            return ImportResult(
+        } catch (e: JsonSyntaxException) {
+            ImportResult(
                 success = false,
-                imported = 0,
-                total = 0,
-                errors = listOf("Error al leer archivo: ${e.message}")
+                message = "Error: Formato JSON inválido - ${e.message}",
+                booksImported = 0,
+                seriesImported = 0,
+                moviesImported = 0
+            )
+        } catch (e: Exception) {
+            ImportResult(
+                success = false,
+                message = "Error al importar: ${e.message}",
+                booksImported = 0,
+                seriesImported = 0,
+                moviesImported = 0
             )
         }
     }
 
     /**
-     * Convertir BookJson (del JSON) a Book (modelo de la app)
+     * Borrar todos los datos de la base de datos
      */
-    private fun convertToBook(bookJson: BookJson): Book {
-        return Book(
-            titulo = bookJson.titulo,
-            autor = bookJson.autor,
-            paginasTotales = bookJson.paginas_totales,
-            sagaTitulo = convertSagaTitulo(bookJson.saga_titulo),
-            sagaVolumen = convertSagaVolumen(bookJson.saga_volumen),
-            fechaInicio = convertFecha(bookJson.fecha_inicio),
-            fechaFin = convertFecha(bookJson.fecha_fin),
-            estado = convertEstado(bookJson.estado),
-            enlaceWeb = bookJson.enlace_web
+    private fun clearAllData() {
+        val books = contentManager.bookDao.getAll()
+        books.forEach { contentManager.bookDao.delete(it.id) }
+
+        val series = contentManager.serieDao.getAll()
+        series.forEach { contentManager.serieDao.delete(it.id) }
+
+        val movies = contentManager.movieDao.getAll()
+        movies.forEach { contentManager.movieDao.delete(it.id) }
+    }
+
+    /**
+     * Validar archivo JSON antes de importar
+     * @param file Archivo JSON a validar
+     * @return ValidationResult con información sobre el archivo
+     */
+    fun validateJsonFile(file: File): ValidationResult {
+        return try {
+            if (!file.exists()) {
+                return ValidationResult(
+                    isValid = false,
+                    message = "El archivo no existe",
+                    previewData = null
+                )
+            }
+
+            if (!file.canRead()) {
+                return ValidationResult(
+                    isValid = false,
+                    message = "No se puede leer el archivo",
+                    previewData = null
+                )
+            }
+
+            // Intentar parsear JSON
+            val jsonData = FileReader(file).use { reader ->
+                gson.fromJson(reader, ExportData::class.java)
+            }
+
+            if (jsonData == null) {
+                return ValidationResult(
+                    isValid = false,
+                    message = "Archivo JSON vacío o inválido",
+                    previewData = null
+                )
+            }
+
+            // Crear vista previa
+            val preview = ImportPreview(
+                exportDate = jsonData.exportDate,
+                totalBooks = jsonData.totalBooks,
+                totalSeries = jsonData.totalSeries,
+                totalMovies = jsonData.totalMovies,
+                totalItems = jsonData.totalBooks + jsonData.totalSeries + jsonData.totalMovies
+            )
+
+            ValidationResult(
+                isValid = true,
+                message = "Archivo válido",
+                previewData = preview
+            )
+
+        } catch (e: JsonSyntaxException) {
+            ValidationResult(
+                isValid = false,
+                message = "Formato JSON inválido: ${e.message}",
+                previewData = null
+            )
+        } catch (e: Exception) {
+            ValidationResult(
+                isValid = false,
+                message = "Error al validar: ${e.message}",
+                previewData = null
+            )
+        }
+    }
+
+    /**
+     * Listar archivos JSON disponibles para importar
+     */
+    fun listAvailableJsonFiles(): List<File> {
+        val exportDir = File(context.getExternalFilesDir(null), "exports")
+        if (!exportDir.exists()) {
+            return emptyList()
+        }
+
+        return exportDir.listFiles { file ->
+            file.isFile && file.name.endsWith(".json")
+        }?.sortedByDescending { it.lastModified() } ?: emptyList()
+    }
+
+    /**
+     * Obtener estadísticas actuales de la BD
+     */
+    fun getCurrentStats(): DatabaseStats {
+        return DatabaseStats(
+            totalBooks = contentManager.bookDao.getAll().size,
+            totalSeries = contentManager.serieDao.getAll().size,
+            totalMovies = contentManager.movieDao.getAll().size
         )
     }
+}
 
-    /**
-     * Convertir saga_titulo: "none" → null
-     */
-    private fun convertSagaTitulo(sagaTitulo: String?): String? {
-        return if (sagaTitulo == null || sagaTitulo.equals("none", ignoreCase = true)) {
-            null
-        } else {
-            sagaTitulo
-        }
-    }
+// Modo de importación
+enum class ImportMode {
+    AGREGAR,    // Agregar a datos existentes
+    REEMPLAZAR  // Borrar todo y reemplazar
+}
 
-    /**
-     * Convertir saga_volumen a String
-     * Puede venir como: Int (1), String ("6/2"), "none", "?", etc.
-     */
-    private fun convertSagaVolumen(sagaVolumen: Any?): String? {
-        return when {
-            sagaVolumen == null -> null
-            sagaVolumen is Number -> sagaVolumen.toString()
-            sagaVolumen is String -> {
-                if (sagaVolumen.equals("none", ignoreCase = true)) {
-                    null
-                } else {
-                    sagaVolumen
-                }
-            }
-            else -> sagaVolumen.toString()
-        }
-    }
+// Resultado de importación
+data class ImportResult(
+    val success: Boolean,
+    val message: String,
+    val booksImported: Int,
+    val seriesImported: Int,
+    val moviesImported: Int
+)
 
-    /**
-     * Convertir fecha de formato "2025/01/03" a "2025-01-03"
-     */
-    private fun convertFecha(fecha: String?): String? {
-        if (fecha == null) return null
-        return fecha.replace("/", "-")
-    }
+// Resultado de validación
+data class ValidationResult(
+    val isValid: Boolean,
+    val message: String,
+    val previewData: ImportPreview?
+)
 
-    /**
-     * Convertir estado del JSON al enum BookStatus
-     * "LEÍDO" → LEIDO
-     * "EN_CURSO" → EN_CURSO
-     * "PENDIENTE" → PENDIENTE
-     */
-    private fun convertEstado(estado: String): BookStatus {
-        return when (estado.uppercase()) {
-            "LEÍDO", "LEIDO" -> BookStatus.LEIDO
-            "EN_CURSO" -> BookStatus.EN_CURSO
-            "PENDIENTE" -> BookStatus.PENDIENTE
-            else -> {
-                // Default si no reconoce el estado
-                BookStatus.PENDIENTE
-            }
-        }
-    }
+// Vista previa de importación
+data class ImportPreview(
+    val exportDate: String,
+    val totalBooks: Int,
+    val totalSeries: Int,
+    val totalMovies: Int,
+    val totalItems: Int
+)
 
-    /**
-     * Resultado de la importación
-     */
-    data class ImportResult(
-        val success: Boolean,
-        val imported: Int,
-        val total: Int,
-        val errors: List<String> = emptyList()
-    ) {
-        fun getMessage(): String {
-            return if (success) {
-                "✅ Importados $imported de $total libros"
-            } else {
-                "⚠️ Importados $imported de $total libros\nErrores:\n${errors.joinToString("\n")}"
-            }
-        }
-    }
+// Estadísticas de BD actual
+data class DatabaseStats(
+    val totalBooks: Int,
+    val totalSeries: Int,
+    val totalMovies: Int
+) {
+    val totalItems: Int
+        get() = totalBooks + totalSeries + totalMovies
 }

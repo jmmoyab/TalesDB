@@ -9,6 +9,7 @@ import com.example.myapplication.ui.BooksFragment
 import com.example.myapplication.ui.SeriesFragment
 import com.example.myapplication.ui.MoviesFragment
 import com.example.myapplication.ui.StatsFragment
+import com.example.myapplication.ui.SettingsFragment
 
 public class MainActivity : AppCompatActivity() {
 
@@ -48,6 +49,10 @@ public class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_stats -> {
                     loadFragment(StatsFragment())
+                    true
+                }
+                R.id.nav_settings -> {
+                    loadFragment(SettingsFragment())
                     true
                 }
                 else -> false

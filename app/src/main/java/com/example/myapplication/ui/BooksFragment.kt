@@ -138,20 +138,19 @@ class BooksFragment : Fragment() {
             return
         }
 
-        Toast.makeText(requireContext(), "⏳ Importando libros...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "⏳ Importando datos...", Toast.LENGTH_SHORT).show()
 
         try {
-            val importHelper = com.example.myapplication.data.ImportHelper(contentManager)
-            val result = importHelper.importBooks(jsonFile)
+            val importHelper = com.example.myapplication.data.ImportHelper(requireContext())
+            val result = importHelper.importFromJson(jsonFile, com.example.myapplication.data.ImportMode.AGREGAR)
 
             Toast.makeText(
                 requireContext(),
-                if (result.success) "✅ Importados ${result.imported} de ${result.total} libros"
-                else "⚠️ Importados ${result.imported} de ${result.total}",
+                result.message,
                 Toast.LENGTH_LONG
             ).show()
 
-            if (result.imported > 0) {
+            if (result.success) {
                 loadData()
             }
         } catch (e: Exception) {

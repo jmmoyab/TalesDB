@@ -9,7 +9,7 @@ Crear una aplicación Android para llevar un registro del progreso de libros, se
 
 **Fecha última actualización:** 18 de Diciembre de 2025
 **IDE utilizado:** AndroidIDE (https://m.androidide.com/)
-**Estado:** ✅ **FUNCIONAL - CRUD completo + Estadísticas implementadas**
+**Estado:** ✅ **FUNCIONAL - CRUD completo + Estadísticas + Búsqueda en tiempo real**
 
 ---
 
@@ -134,7 +134,31 @@ Crear una aplicación Android para llevar un registro del progreso de libros, se
 - ✅ Validación de campos obligatorios (título, estado)
 - ✅ Mensajes de confirmación (Toast)
 
-### VI. Dependencias Configuradas
+### VI. Búsqueda en Tiempo Real
+
+| Archivo | Descripción | Estado |
+|---------|-------------|--------|
+| BookDao.search() | Búsqueda en título, autor, saga | ✅ Completo |
+| SerieDao.search() | Búsqueda en título, plataforma | ✅ Completo |
+| MovieDao.search() | Búsqueda en título, plataforma | ✅ Completo |
+| SearchView en layouts | Widget de búsqueda en cada fragmento | ✅ Completo |
+| BooksFragment | Búsqueda en tiempo real implementada | ✅ Completo |
+| SeriesFragment | Búsqueda en tiempo real implementada | ✅ Completo |
+| MoviesFragment | Búsqueda en tiempo real implementada | ✅ Completo |
+
+**Funcionalidades de búsqueda:**
+- ✅ **Búsqueda en tiempo real:** Resultados instantáneos al escribir (onChange)
+- ✅ **Búsqueda multiplataforma:** Busca en título, autor/plataforma, saga
+- ✅ **UX mejorada:** Mensajes adaptativos ("No hay items" vs "No se encontraron resultados")
+- ✅ **SearchView integrado:** Widget nativo con hints específicos por sección
+- ✅ **Clear button:** Botón para limpiar búsqueda y volver a vista completa
+
+**Campos de búsqueda por sección:**
+- **Libros:** Título, Autor, Saga
+- **Series:** Título, Plataforma
+- **Películas:** Título, Plataforma
+
+### VII. Dependencias Configuradas
 
 ```kotlin
 // Core Android
@@ -177,22 +201,24 @@ implementation("com.google.code.gson:gson:2.10.1")
 
 ## 🚀 Próximos Pasos Pendientes
 
-### ✅ Completado - CRUD Completo:
+### ✅ Completado:
 1. ✅ **Formulario para agregar items** - FAB + diálogos implementados
 2. ✅ **Editar items** - Click en card implementado
 3. ✅ **Eliminar items** - Long-click con confirmación implementado
 4. ✅ **Validación de formularios** - Campos obligatorios validados
+5. ✅ **Búsqueda en tiempo real** - SearchView implementado en las 3 secciones
+6. ✅ **Estadísticas completas** - Resumen, por estado, por año, por mes
 
-### Prioridad Media (Opcionales para v1.0):
-4. **Filtros** - Por estado, autor, plataforma
-5. **Búsqueda** - Por título en cada sección
-6. **Ordenamiento** - Por fecha, título, estado
+### Prioridad Media (Opcionales para v1.1):
+7. **Filtros por estado** - Filtrar items por EN_CURSO, PENDIENTE, VISTA, etc.
+8. **Ordenamiento** - Por fecha, título, estado
+9. **Exportar/Importar datos** - Backup en JSON
 
 ### Prioridad Baja:
-7. **Pantalla de estadísticas** - Gráficos con libros/series/películas por año/mes
-8. **Detalles expandidos** - Pantalla de detalle al hacer click en un item
-9. **Backup/Restore** - Exportar/importar datos en JSON
-10. **Temas** - Soporte para tema claro/oscuro manual
+10. **Detalles expandidos** - Pantalla de detalle al hacer click en un item
+11. **Temas** - Soporte para tema claro/oscuro manual
+12. **Notificaciones** - Recordatorios para continuar lectura/visualización
+13. **Widgets** - Widget de estadísticas en pantalla de inicio
 
 ---
 
@@ -261,6 +287,16 @@ app/src/main/
 ---
 
 ## 📝 Historial de Cambios
+
+**18 Dic 2025 (sesión tarde - continuación):**
+- ✅ **Implementada búsqueda en tiempo real (commits 42bf136, 4e18869)**
+  - Agregadas funciones search() en BookDao, SerieDao, MovieDao
+  - Búsqueda por múltiples campos (título, autor/plataforma, saga)
+  - SearchView integrado en los 3 layouts de fragmentos
+  - Implementada búsqueda en BooksFragment, SeriesFragment, MoviesFragment
+  - Búsqueda en tiempo real con onQueryTextChange
+  - Mensajes adaptativos según contexto
+  - UX mejorada con hints específicos y clear button
 
 **18 Dic 2025 (sesión tarde):**
 - ✅ Configurado Git localmente
@@ -637,35 +673,38 @@ buildTypes {
 
 **La app ya es funcional y usable. Opciones para mejorar:**
 
-**Opción A: Importación JSON**
-1. Crear ImportHelper.kt
-2. Función para importar desde archivos JSON
-3. Botón de importación en configuración
-4. Migrar datos existentes del usuario
+**Opción A: Filtros por Estado** (Prioridad Alta)
+1. Agregar chips o botones de filtro en cada fragmento
+2. Filtrar por EN_CURSO, PENDIENTE, VISTA, etc.
+3. Combinar con búsqueda existente
+4. Permitir múltiples filtros simultáneos
 
-**Opción B: Git y GitHub**
-✅ Git configurado localmente (commit: 19b4f4c)
+**Opción B: Ordenamiento Personalizado**
+1. Menú de ordenamiento en cada sección
+2. Ordenar por: fecha de creación, fecha de inicio, título, estado
+3. Orden ascendente/descendente
+4. Persistir preferencia de ordenamiento
+
+**Opción C: Exportar/Importar Datos**
+1. Crear ImportHelper.kt y ExportHelper.kt
+2. Exportar a JSON (backup)
+3. Importar desde JSON
+4. Botón en configuración o menú
+
+**Opción D: Git y GitHub**
+✅ Git configurado localmente (commits: 19b4f4c → 4e18869)
 - Próximo paso opcional: Subir a GitHub para backup en la nube
 - O continuar solo con Git local
 
-**Opción C: Mejoras de UI**
+**Opción E: Mejoras de UI**
 1. Mejorar diseño de cards
 2. Agregar colores por estado
 3. Iconos personalizados
 4. Animaciones básicas
 
-**Opción D: Estadísticas**
-✅ Implementada (commit: 7f2b681)
-- Pantalla con 4 secciones de estadísticas
-- Resumen general con totales
-- Estados por tipo de contenido
-- Actividad por año
-
-**Opción E: Búsqueda y Filtros**
-1. Búsqueda por título en cada sección
-2. Filtros por estado
-3. Filtros por autor/plataforma
-4. Ordenamiento personalizado
+**✅ Completado:**
+- ✅ **Estadísticas** (commit: 7f2b681) - Con resumen, por estado, por año, por mes
+- ✅ **Búsqueda en tiempo real** (commits: 42bf136, 4e18869) - En las 3 secciones
 
 ### 📝 Preguntas para decidir:
 
@@ -698,14 +737,15 @@ buildTypes {
 
 ---
 
-**Estado:** ✅ **FUNCIONAL - VERSIÓN 1.0 BÁSICA COMPLETA**
+**Estado:** ✅ **VERSIÓN 1.0 COMPLETA - FUNCIONAL Y USABLE**
 
 **La app ya tiene:**
-- Navegación completa
-- Persistencia SQLite
-- CRUD completo para Books, Series y Movies
-- Formularios de entrada
-- Validación de datos
-- Es completamente usable
+- ✅ Navegación completa con 4 pestañas
+- ✅ Persistencia SQLite
+- ✅ CRUD completo para Books, Series y Movies
+- ✅ Formularios de entrada con validación
+- ✅ Búsqueda en tiempo real en las 3 secciones
+- ✅ Estadísticas completas (resumen, por estado, por año, por mes)
+- ✅ Es completamente usable para gestionar contenido
 
-**Próxima sesión:** Mejoras opcionales (importación JSON, Git/GitHub, UI, etc.)
+**Próxima sesión:** Mejoras opcionales (filtros por estado, ordenamiento, exportar/importar, UI, etc.)
