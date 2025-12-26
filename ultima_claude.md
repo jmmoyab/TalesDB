@@ -484,4 +484,40 @@ Feature: Implementar filtros por estado y configuración avanzada - v1.1
 - ✅ PROXIMA_SESION.md (actualizado para v1.2)
 - ✅ ultima_claude.md (este archivo)
 
-**Fecha de actualización:** 26 de Diciembre de 2025
+---
+
+## 🔧 ACTUALIZACIÓN POST-SESIÓN: Directorio Público Accesible
+
+**Problema detectado:** El directorio `/Android/data/.../files/exports/` NO es accesible desde exploradores de archivos en Android 11+
+
+**Solución implementada:**
+- ✅ Cambiado a directorio público: **`/storage/emulated/0/Documents/ContentManager/`**
+- ✅ Este directorio SÍ es accesible desde cualquier explorador de archivos
+- ✅ Agregado permiso `WRITE_EXTERNAL_STORAGE` en AndroidManifest.xml
+- ✅ Actualizado `provider_paths.xml` para compartir archivos públicos
+- ✅ Función `getPublicExportDirectory()` en ExportHelper e ImportHelper
+
+**Archivos modificados:**
+1. `ExportHelper.kt` - Usa `Environment.getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS)`
+2. `ImportHelper.kt` - Usa el mismo directorio público
+3. `AndroidManifest.xml` - Agregado permiso de escritura
+4. `provider_paths.xml` - Agregado `external-path` para Documents
+
+**Commit:** fc044fa - Fix: Cambiar directorio de exportación a ubicación pública accesible
+
+**Beneficios:**
+- ✅ Usuarios pueden acceder a sus backups fácilmente
+- ✅ Archivos visibles en exploradores de archivos (Files, Mi File Manager, etc.)
+- ✅ Más fácil hacer backups manuales a PC/nube
+- ✅ Compartir archivos sigue funcionando perfectamente
+
+**Nuevo directorio:**
+```
+/storage/emulated/0/Documents/ContentManager/
+  ├── content_export_20251226_123456.json
+  └── content_export_20251226_123456.txt
+```
+
+---
+
+**Fecha de actualización:** 26 de Diciembre de 2025 (Actualizado con fix de directorio público)
