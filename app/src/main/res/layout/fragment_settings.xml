@@ -129,6 +129,53 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Backup de Base de Datos -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="💾 Backup de Base de Datos"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:paddingBottom="12dp" />
+
+                <Button
+                    android:id="@+id/btnBackupDb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Crear backup de BD"
+                    android:layout_marginBottom="8dp"
+                    style="@style/Widget.Material3.Button.ElevatedButton" />
+
+                <Button
+                    android:id="@+id/btnRestoreDb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Restaurar desde backup"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Copia completa de la base de datos. Mantiene IDs originales y es más rápido que JSON."
+                    android:textSize="12sp"
+                    android:paddingTop="4dp"
+                    android:alpha="0.7" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Gestión de archivos -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -157,6 +204,45 @@
                     android:layout_height="wrap_content"
                     android:text="Ver directorio de exportación"
                     style="@style/Widget.Material3.Button.OutlinedButton" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Apariencia -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🎨 Apariencia"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:paddingBottom="12dp" />
+
+                <Button
+                    android:id="@+id/btnTheme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tema de la aplicación"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Elige entre tema oscuro, claro o automático"
+                    android:textSize="12sp"
+                    android:paddingTop="4dp"
+                    android:alpha="0.7" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

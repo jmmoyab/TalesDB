@@ -16,11 +16,13 @@ class PreferencesManager(context: Context) {
         private const val KEY_DATE_FORMAT = "date_format"
         private const val KEY_INCLUDE_NOTES = "include_notes"
         private const val KEY_INCLUDE_LINKS = "include_links"
+        private const val KEY_THEME_MODE = "theme_mode"
 
         // Valores por defecto
         const val DEFAULT_DATE_FORMAT = "DD/MM/YYYY"
         private const val DEFAULT_INCLUDE_NOTES = true
         private const val DEFAULT_INCLUDE_LINKS = true
+        const val DEFAULT_THEME_MODE = "AUTO"
     }
 
     private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -32,6 +34,15 @@ class PreferencesManager(context: Context) {
         DD_MM_YYYY("DD/MM/YYYY", "26/12/2025"),
         MM_DD_YYYY("MM/DD/YYYY", "12/26/2025"),
         YYYY_MM_DD("YYYY-MM-DD", "2025-12-26")
+    }
+
+    /**
+     * Modos de tema disponibles
+     */
+    enum class ThemeMode(val label: String, val value: String) {
+        DARK("🌙 Oscuro", "DARK"),
+        LIGHT("☀️ Claro", "LIGHT"),
+        AUTO("🔄 Automático", "AUTO")
     }
 
     // ========== Directorio de exportación ==========
@@ -111,6 +122,35 @@ class PreferencesManager(context: Context) {
         prefs.edit().putBoolean(KEY_INCLUDE_LINKS, include).apply()
     }
 
+    // ========== Modo de tema ==========
+
+    /**
+     * Obtener modo de tema preferido
+     * @return Modo de tema (DARK, LIGHT, AUTO)
+     */
+    fun getThemeMode(): String {
+        return prefs.getString(KEY_THEME_MODE, DEFAULT_THEME_MODE) ?: DEFAULT_THEME_MODE
+    }
+
+    /**
+     * Establecer modo de tema preferido
+     * @param mode Uno de los modos: DARK, LIGHT, AUTO
+     */
+    fun setThemeMode(mode: String) {
+        prefs.edit().putString(KEY_THEME_MODE, mode).apply()
+    }
+
+    /**
+     * Obtener modo de tema como enum
+     */
+    fun getThemeModeEnum(): ThemeMode {
+        return when (getThemeMode()) {
+            "DARK" -> ThemeMode.DARK
+            "LIGHT" -> ThemeMode.LIGHT
+            else -> ThemeMode.AUTO
+        }
+    }
+
     // ========== Reset ==========
 
     /**
@@ -125,6 +165,7 @@ class PreferencesManager(context: Context) {
      */
     fun getPreferencesSummary(): String {
         return buildString {
+            appendLine("🎨 Tema: ${getThemeModeEnum().label}")
             appendLine("📁 Directorio: ${getExportDirectory() ?: "Por defecto"}")
             appendLine("📅 Formato de fecha: ${getDateFormat()}")
             appendLine("📝 Incluir notas: ${if (shouldIncludeNotes()) "Sí" else "No"}")

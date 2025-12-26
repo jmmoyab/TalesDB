@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.example.myapplication.data.BackupHelper
 import com.example.myapplication.data.ContentManager
 import com.example.myapplication.data.ExportHelper
 import com.example.myapplication.data.ImportHelper
@@ -30,6 +31,7 @@ class SettingsFragment : Fragment() {
     private lateinit var importHelper: ImportHelper
     private lateinit var preferencesManager: PreferencesManager
     private lateinit var dateFormatHelper: DateFormatHelper
+    private lateinit var backupHelper: BackupHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +45,7 @@ class SettingsFragment : Fragment() {
         importHelper = ImportHelper(requireContext())
         preferencesManager = PreferencesManager(requireContext())
         dateFormatHelper = DateFormatHelper(requireContext())
+        backupHelper = BackupHelper(requireContext())
 
         setupButtons()
         updateStats()
@@ -66,9 +69,24 @@ class SettingsFragment : Fragment() {
             showImportDialog()
         }
 
+        // Backup de base de datos
+        binding.btnBackupDb.setOnClickListener {
+            createDatabaseBackup()
+        }
+
+        // Restaurar backup
+        binding.btnRestoreDb.setOnClickListener {
+            showRestoreBackupDialog()
+        }
+
         // Ver directorio de exportación
         binding.btnOpenFolder.setOnClickListener {
             openExportFolder()
+        }
+
+        // Apariencia - Tema
+        binding.btnTheme.setOnClickListener {
+            showThemeDialog()
         }
 
         // Configuración avanzada - Formato de fecha
@@ -424,6 +442,52 @@ class SettingsFragment : Fragment() {
             .show()
     }
 
+    // ========== APARIENCIA ==========
+
+    private fun showThemeDialog() {
+        val themes = arrayOf("DARK", "LIGHT", "AUTO")
+        val themeLabels = arrayOf("🌙 Oscuro", "☀️ Claro", "🔄 Automático")
+        val currentTheme = preferencesManager.getThemeMode()
+        val currentIndex = themes.indexOf(currentTheme).coerceAtLeast(0)
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Tema de la aplicación")
+            .setSingleChoiceItems(themeLabels, currentIndex) { dialog, which ->
+                val selectedTheme = themes[which]
+                preferencesManager.setThemeMode(selectedTheme)
+
+                Toast.makeText(
+                    requireContext(),
+                    "✅ Tema cambiado a ${themeLabels[which]}",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                // Aplicar tema inmediatamente
+                applyTheme(selectedTheme)
+
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    /**
+     * Aplicar tema inmediatamente sin reiniciar la app
+     */
+    private fun applyTheme(theme: String) {
+        when (theme) {
+            "DARK" -> androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+            )
+            "LIGHT" -> androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+            )
+            "AUTO" -> androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            )
+        }
+    }
+
     // ========== CONFIGURACIÓN AVANZADA ==========
 
     private fun showDateFormatDialog() {
@@ -506,6 +570,125 @@ class SettingsFragment : Fragment() {
             }
             .setNegativeButton("Cancelar", null)
             .show()
+    }
+
+    // ========== BACKUP DE BASE DE DATOS ==========
+
+    /**
+     * Crear backup de la base de datos
+     */
+    private fun createDatabaseBackup() {
+        Toast.makeText(requireContext(), "Creando backup de BD...", Toast.LENGTH_SHORT).show()
+
+        val result = backupHelper.createBackup()
+
+        if (result.success) {
+            val info = backupHelper.getBackupInfo(result.file!!)
+            AlertDialog.Builder(requireContext())
+                .setTitle("✅ Backup creado")
+                .setMessage(
+                    "Archivo: ${info.fileName}\n" +
+                    "Tamaño: ${info.fileSize}\n" +
+                    "Fecha: ${info.date}\n\n" +
+                    "Ubicación:\n${info.path}"
+                )
+                .setPositiveButton("OK", null)
+                .show()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                result.message,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    /**
+     * Mostrar diálogo para restaurar backup
+     */
+    private fun showRestoreBackupDialog() {
+        val backups = backupHelper.listAvailableBackups()
+
+        if (backups.isEmpty()) {
+            Toast.makeText(
+                requireContext(),
+                "No hay backups disponibles",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        // Crear lista de nombres de archivo con fecha y tamaño
+        val backupNames = backups.map { file ->
+            val info = backupHelper.getBackupInfo(file)
+            "${info.fileName}\n${info.date} - ${info.fileSize}"
+        }.toTypedArray()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Seleccionar backup a restaurar")
+            .setItems(backupNames) { _, which ->
+                val selectedBackup = backups[which]
+                confirmRestoreBackup(selectedBackup)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    /**
+     * Confirmar restauración de backup
+     */
+    private fun confirmRestoreBackup(backupFile: File) {
+        val info = backupHelper.getBackupInfo(backupFile)
+        val stats = importHelper.getCurrentStats()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("⚠️ Confirmar restauración")
+            .setMessage(
+                "Esto reemplazará TODA la base de datos actual.\n\n" +
+                "Backup a restaurar:\n" +
+                "${info.fileName}\n" +
+                "${info.date}\n\n" +
+                "Datos actuales que se perderán:\n" +
+                "• ${stats.totalBooks} libros\n" +
+                "• ${stats.totalSeries} series\n" +
+                "• ${stats.totalMovies} películas\n\n" +
+                "¿Estás seguro?"
+            )
+            .setPositiveButton("Sí, restaurar") { _, _ ->
+                restoreDatabaseBackup(backupFile)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    /**
+     * Restaurar base de datos desde backup
+     */
+    private fun restoreDatabaseBackup(backupFile: File) {
+        Toast.makeText(requireContext(), "Restaurando backup...", Toast.LENGTH_SHORT).show()
+
+        val result = backupHelper.restoreBackup(backupFile)
+
+        if (result.success) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("✅ Backup restaurado")
+                .setMessage(
+                    "${result.message}\n\n" +
+                    "IMPORTANTE: Debes reiniciar la aplicación para que los cambios surtan efecto."
+                )
+                .setPositiveButton("Reiniciar ahora") { _, _ ->
+                    // Reiniciar la actividad
+                    requireActivity().recreate()
+                }
+                .setCancelable(false)
+                .show()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                result.message,
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     private fun updateStats() {

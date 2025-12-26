@@ -2,8 +2,10 @@
 package com.example.myapplication
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.example.myapplication.data.PreferencesManager
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.ui.BooksFragment
 import com.example.myapplication.ui.SeriesFragment
@@ -20,6 +22,9 @@ public class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Aplicar tema según preferencias antes de crear la vista
+        applyTheme()
 
         // Inflate and get instance of binding
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -64,6 +69,21 @@ public class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
+    }
+
+    /**
+     * Aplicar tema según preferencias del usuario
+     */
+    private fun applyTheme() {
+        val prefsManager = PreferencesManager(this)
+        val themeMode = prefsManager.getThemeMode()
+
+        when (themeMode) {
+            "DARK" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            "LIGHT" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            "AUTO" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
     }
 
     override fun onDestroy() {
