@@ -796,7 +796,42 @@ buildTypes {
 
 ---
 
-**Estado:** ✅ **VERSIÓN 1.0 COMPLETA - FUNCIONAL, USABLE Y CON BACKUP**
+### IX. Filtros por Estado
+
+| Elemento | Descripción | Estado |
+|----------|-------------|--------|
+| ChipGroup en BooksFragment | Filtros: TODOS, LEÍDO, EN CURSO, PENDIENTE | ✅ Completo |
+| ChipGroup en SeriesFragment | Filtros: TODOS, TERMINADA, EN CURSO, PENDIENTE, EN ESPERA | ✅ Completo |
+| ChipGroup en MoviesFragment | Filtros: TODOS, VISTA, EN CURSO, PENDIENTE | ✅ Completo |
+| Combinación filtros + búsqueda | Buscar dentro de items filtrados | ✅ Completo |
+| HorizontalScrollView | Scroll horizontal para chips | ✅ Completo |
+
+**Funcionalidades implementadas:**
+- ✅ Filtrado por estado en las 3 secciones
+- ✅ Chip "TODOS" seleccionado por defecto
+- ✅ Combinación de filtros con búsqueda en tiempo real
+- ✅ Mensajes adaptativos según filtro activo
+- ✅ UI mejorada con Material Design chips
+
+### X. Configuración Avanzada
+
+| Archivo | Descripción | Estado |
+|---------|-------------|--------|
+| PreferencesManager.kt | Gestión de SharedPreferences | ✅ Completo |
+| DateFormatHelper.kt | Formateo de fechas personalizado | ✅ Completo |
+| Opciones en SettingsFragment | 4 funciones nuevas | ✅ Completo |
+| Card de configuración avanzada | UI con 3 botones | ✅ Completo |
+
+**Funcionalidades implementadas:**
+- ✅ Formato de fecha personalizable (DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD)
+- ✅ Opciones de exportación (incluir/excluir notas y enlaces)
+- ✅ Ver resumen de configuración actual
+- ✅ Reset a valores por defecto
+- ✅ Persistencia con SharedPreferences
+
+---
+
+**Estado:** ✅ **VERSIÓN 1.1 COMPLETA - FILTROS Y CONFIGURACIÓN AVANZADA**
 
 **La app ya tiene:**
 - ✅ Navegación completa con 5 pestañas
@@ -804,14 +839,16 @@ buildTypes {
 - ✅ CRUD completo para Books, Series y Movies
 - ✅ Formularios de entrada con validación
 - ✅ Búsqueda en tiempo real en las 3 secciones
+- ✅ **Filtros por estado** (NUEVO v1.1)
+- ✅ **Combinación de filtros + búsqueda** (NUEVO v1.1)
 - ✅ Estadísticas completas (resumen, por estado, por año, por mes)
-- ✅ **Exportar/Importar JSON y TXT**
-- ✅ **Pantalla de Configuración completa**
-- ✅ **Compartir archivos exportados**
+- ✅ Exportar/Importar JSON y TXT
+- ✅ Pantalla de Configuración completa
+- ✅ **Configuración avanzada** (NUEVO v1.1)
+- ✅ **Formato de fecha personalizable** (NUEVO v1.1)
+- ✅ Compartir archivos exportados
 - ✅ Es completamente usable para gestionar contenido
 
-**Próxima sesión (Versión 1.1):**
+**Próxima sesión (Versión 1.2):**
 1. Backup de Base de Datos SQLite
 2. Modo Oscuro/Claro
-3. Filtros por Estado
-4. Configuración Avanzada

@@ -1,14 +1,14 @@
 # 🚀 Preparado para la Próxima Sesión
 
-**Fecha:** 19 de Diciembre de 2025
-**Estado actual:** ✅ App funcional - VERSIÓN 1.0 COMPLETA + Exportar/Importar
-**Prioridad:** Mejoras para versión 1.1 (Backup BD, Modo Oscuro, Filtros, Configuración)
+**Fecha:** 26 de Diciembre de 2025
+**Estado actual:** ✅ App funcional - VERSIÓN 1.1 COMPLETA + Filtros + Configuración Avanzada
+**Prioridad:** Mejoras para versión 1.2 (Backup BD, Modo Oscuro)
 
 ---
 
 ## ✅ Lo que ya funciona (NO tocar):
 
-- ✅ Navegación con 4 pestañas (Libros, Series, Películas, Estadísticas)
+- ✅ Navegación con 5 pestañas (Libros, Series, Películas, Estadísticas, Configuración)
 - ✅ Base de datos SQLite con 3 tablas
 - ✅ DAOs completos (BookDao, SerieDao, MovieDao)
 - ✅ Adaptadores específicos (BookAdapter, SerieAdapter, MovieAdapter)
@@ -25,6 +25,11 @@
   - ✅ Búsqueda por título, autor/plataforma, saga
   - ✅ Resultados instantáneos al escribir
   - ✅ Mensajes adaptativos
+- ✅ **FILTROS POR ESTADO:** (NUEVO v1.1)
+  - ✅ ChipGroup en los 3 fragmentos
+  - ✅ Filtrado por estado (TODOS, LEÍDO, EN CURSO, etc.)
+  - ✅ Combinación de filtros + búsqueda
+  - ✅ UI mejorada con scroll horizontal
 - ✅ **ESTADÍSTICAS COMPLETAS:**
   - ✅ Pantalla de estadísticas con 9 secciones
   - ✅ Resumen general con totales
@@ -40,32 +45,44 @@
   - ✅ Estadísticas en tiempo real
   - ✅ Gestión de archivos exportados
   - ✅ Acerca de la app
+- ✅ **CONFIGURACIÓN AVANZADA:** (NUEVO v1.1)
+  - ✅ Formato de fecha personalizable (3 opciones)
+  - ✅ Opciones de exportación (incluir notas/enlaces)
+  - ✅ Ver configuración actual
+  - ✅ Reset a valores por defecto
+  - ✅ PreferencesManager con SharedPreferences
 
 ---
 
 ## 🎯 Tareas Principales para la Próxima Sesión
 
-### ✅ VERSIÓN 1.0 - COMPLETADA (19 Dic 2025)
+### ✅ VERSIÓN 1.1 - COMPLETADA (26 Dic 2025)
 
 **Funcionalidades implementadas:**
-- ✅ CRUD completo (Crear, Leer, Actualizar, Eliminar)
-- ✅ Búsqueda en tiempo real en las 3 secciones
-- ✅ Estadísticas completas (resumen, por estado, por año, por mes)
-- ✅ **Exportar/Importar JSON y TXT** (NUEVO)
-- ✅ **Pantalla de Configuración** (NUEVO)
-- ✅ Navegación con 5 pestañas
-- ✅ Persistencia SQLite
-- ✅ Formularios con validación
+- ✅ **Filtros por Estado** (Prioridad 3)
+  - ChipGroup en los 3 fragmentos
+  - Filtrado por estado específico
+  - Combinación de filtros + búsqueda
+  - UI mejorada con scroll horizontal
+- ✅ **Configuración Avanzada** (Prioridad 4)
+  - PreferencesManager.kt (gestión de preferencias)
+  - DateFormatHelper.kt (formateo de fechas)
+  - Formato de fecha personalizable (3 opciones)
+  - Opciones de exportación (incluir/excluir notas y enlaces)
+  - Ver configuración actual + reset
 
 **Patrón de interacción:**
-- Click corto → Editar
-- Long-click → Eliminar (con confirmación)
-- FAB → Menú popup → Crear nuevo
-- SearchView → Búsqueda en tiempo real
+- Click en chip → Filtrar por estado
+- Click en "TODOS" → Mostrar todos
+- Búsqueda + Filtro → Buscar dentro de filtrados
+- Configuración → Personalizar formato de fecha y opciones
+
+**Archivos modificados:** 11 archivos, ~776 líneas agregadas
+**Commit:** 2bef805
 
 ---
 
-## 🚀 Tareas Pendientes para Versión 1.1
+## 🚀 Tareas Pendientes para Versión 1.2
 
 ### PRIORIDAD 1: Backup de Base de Datos SQLite (30-45 min)
 
@@ -97,6 +114,8 @@
 - Mostrar lista de backups disponibles
 
 **Directorio:** `/Android/data/.../files/backups/db/`
+
+---
 
 ---
 
@@ -133,88 +152,6 @@ when (preferencia) {
 - Card "Apariencia"
 - RadioButtons: Oscuro, Claro, Automático
 - Vista previa del cambio inmediato
-
----
-
-### PRIORIDAD 3: Filtros por Estado (30-45 min)
-
-**Objetivo:** Complementar búsqueda con filtros por estado
-
-**Implementación:**
-1. Agregar `ChipGroup` en layouts de fragmentos
-2. Un Chip por cada estado + chip "TODOS"
-3. Combinar filtro con búsqueda existente
-4. Mantener filtro al cambiar de pestaña (opcional)
-
-**Estados por tipo:**
-- **Libros:** LEÍDO, EN_CURSO, PENDIENTE, TODOS
-- **Series:** TERMINADA, EN_CURSO, PENDIENTE, EN_ESPERA_TEMPORADA, TODOS
-- **Películas:** VISTA, EN_CURSO, PENDIENTE, TODOS
-
-**Archivos a modificar:**
-- `fragment_books.xml`, `fragment_series.xml`, `fragment_movies.xml`
-- `BooksFragment.kt`, `SeriesFragment.kt`, `MoviesFragment.kt`
-- Los DAOs ya tienen `getByEstado()` listo para usar
-
-**Funcionalidad:**
-- Click en chip → Filtrar por ese estado
-- Click en "TODOS" → Mostrar todos
-- Combinar con búsqueda: buscar dentro de items filtrados
-- Chips con colores según estado (verde=completado, amarillo=en curso, etc.)
-
----
-
-### PRIORIDAD 4: Configuración Avanzada (45-60 min)
-
-**Objetivo:** Opciones adicionales de configuración
-
-**Implementación:**
-
-#### 4.1. Directorio de Trabajo Personalizado
-- Permitir al usuario elegir dónde guardar exports/backups
-- Usar `Environment.getExternalStorageDirectory()` + path personalizado
-- Guardar preferencia en SharedPreferences
-- Crear directorio si no existe
-
-#### 4.2. Formato de Fecha Preferido
-- Opción para elegir formato de fecha
-- Opciones: DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD
-- Aplicar en toda la app (fragmentos, diálogos)
-- Guardar en SharedPreferences
-
-#### 4.3. Idioma (opcional)
-- Español (actual)
-- Inglés (traducir strings.xml)
-- Guardar preferencia
-
-#### 4.4. Configuración de Exportación
-- Incluir notas en exportación (sí/no)
-- Incluir enlaces web (sí/no)
-- Formato de nombres de archivo
-- Comprimir exports en ZIP (opcional)
-
-**Archivos a crear:**
-- `PreferencesManager.kt` - Gestionar SharedPreferences
-- `DateFormatHelper.kt` - Formatear fechas según preferencia
-
-**Agregar en SettingsFragment:**
-- Card "Configuración Avanzada"
-- Opciones organizadas por categoría
-- Reset a valores por defecto
-
----
-
-### OPCIÓN B: Git y GitHub (Prioridad MEDIA - 30 min)
-
-**Pasos documentados en:** `estado_proyecto.md` (sección "Control de Versiones con Git")
-
-1. Inicializar repositorio Git
-2. Crear .gitignore
-3. Primer commit
-4. Crear repo en GitHub
-5. Push a remote
-
-**Comandos listos para copiar/pegar** en estado_proyecto.md
 
 ---
 
@@ -445,8 +382,8 @@ Antes de empezar la próxima sesión, verifica:
 
 ---
 
-**Estado:** ✅ VERSIÓN 1.0 COMPLETADA - TODO LISTO PARA v1.1
+**Estado:** ✅ VERSIÓN 1.1 COMPLETADA - TODO LISTO PARA v1.2
 
-**Recomendación:** Empezar con Opción A (Filtros por Estado) para complementar la búsqueda implementada
+**Recomendación:** Empezar con Prioridad 1 (Backup de Base de Datos SQLite) para complementar la exportación JSON
 
-**Fecha de actualización:** 18 de Diciembre de 2025
+**Fecha de actualización:** 26 de Diciembre de 2025
