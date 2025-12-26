@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.data.Book
+import com.example.myapplication.data.BookStatus
 import com.example.myapplication.data.ContentManager
 import com.example.myapplication.databinding.FragmentBooksBinding
 
@@ -19,6 +20,7 @@ class BooksFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var contentManager: ContentManager
     private lateinit var adapter: BookAdapter
+    private var currentFilter: String? = null // null = TODOS
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,6 +32,7 @@ class BooksFragment : Fragment() {
 
         setupRecyclerView()
         setupSearchView()
+        setupChipFilters()
         loadData()
         setupFab()
 
@@ -49,16 +52,64 @@ class BooksFragment : Fragment() {
         })
     }
 
-    private fun searchBooks(query: String) {
-        val books = if (query.isBlank()) {
-            contentManager.bookDao.getAll()
-        } else {
-            contentManager.bookDao.search(query)
+    private fun setupChipFilters() {
+        binding.chipAll.setOnClickListener {
+            currentFilter = null
+            searchBooks(binding.searchView.query.toString())
         }
-        adapter.updateItems(books)
 
-        if (books.isEmpty()) {
-            binding.emptyText.text = if (query.isBlank()) "No hay libros" else "No se encontraron resultados"
+        binding.chipRegistrado.setOnClickListener {
+            currentFilter = BookStatus.LEIDO.name
+            searchBooks(binding.searchView.query.toString())
+        }
+
+        binding.chipEnCurso.setOnClickListener {
+            currentFilter = BookStatus.EN_CURSO.name
+            searchBooks(binding.searchView.query.toString())
+        }
+
+        binding.chipPendiente.setOnClickListener {
+            currentFilter = BookStatus.PENDIENTE.name
+            searchBooks(binding.searchView.query.toString())
+        }
+    }
+
+    private fun searchBooks(query: String) {
+        // Obtener libros según filtro de estado
+        val allBooks = when (currentFilter) {
+            null -> {
+                // TODOS: buscar o mostrar todos
+                if (query.isBlank()) {
+                    contentManager.bookDao.getAll()
+                } else {
+                    contentManager.bookDao.search(query)
+                }
+            }
+            else -> {
+                // Filtrado por estado
+                val estadoEnum = BookStatus.valueOf(currentFilter!!)
+                val booksByStatus = contentManager.bookDao.getByEstado(estadoEnum)
+                // Si hay búsqueda, filtrar dentro de los resultados por estado
+                if (query.isBlank()) {
+                    booksByStatus
+                } else {
+                    booksByStatus.filter { book ->
+                        book.titulo.contains(query, ignoreCase = true) ||
+                        (book.autor?.contains(query, ignoreCase = true) == true) ||
+                        (book.sagaTitulo?.contains(query, ignoreCase = true) == true)
+                    }
+                }
+            }
+        }
+
+        adapter.updateItems(allBooks)
+
+        if (allBooks.isEmpty()) {
+            binding.emptyText.text = if (query.isBlank() && currentFilter == null) {
+                "No hay libros"
+            } else {
+                "No se encontraron resultados"
+            }
             binding.emptyText.visibility = View.VISIBLE
             binding.recyclerView.visibility = View.GONE
         } else {

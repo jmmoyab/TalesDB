@@ -14,6 +14,8 @@ import com.example.myapplication.data.ContentManager
 import com.example.myapplication.data.ExportHelper
 import com.example.myapplication.data.ImportHelper
 import com.example.myapplication.data.ImportMode
+import com.example.myapplication.data.PreferencesManager
+import com.example.myapplication.data.DateFormatHelper
 import com.example.myapplication.databinding.FragmentSettingsBinding
 import java.io.File
 import java.text.SimpleDateFormat
@@ -26,6 +28,8 @@ class SettingsFragment : Fragment() {
     private lateinit var contentManager: ContentManager
     private lateinit var exportHelper: ExportHelper
     private lateinit var importHelper: ImportHelper
+    private lateinit var preferencesManager: PreferencesManager
+    private lateinit var dateFormatHelper: DateFormatHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +41,8 @@ class SettingsFragment : Fragment() {
         contentManager = ContentManager(requireContext())
         exportHelper = ExportHelper(requireContext())
         importHelper = ImportHelper(requireContext())
+        preferencesManager = PreferencesManager(requireContext())
+        dateFormatHelper = DateFormatHelper(requireContext())
 
         setupButtons()
         updateStats()
@@ -63,6 +69,21 @@ class SettingsFragment : Fragment() {
         // Ver directorio de exportación
         binding.btnOpenFolder.setOnClickListener {
             openExportFolder()
+        }
+
+        // Configuración avanzada - Formato de fecha
+        binding.btnDateFormat.setOnClickListener {
+            showDateFormatDialog()
+        }
+
+        // Configuración avanzada - Opciones de exportación
+        binding.btnExportOptions.setOnClickListener {
+            showExportOptionsDialog()
+        }
+
+        // Configuración avanzada - Ver preferencias
+        binding.btnViewPreferences.setOnClickListener {
+            showPreferencesSummary()
         }
 
         // Borrar todos los datos
@@ -381,15 +402,17 @@ class SettingsFragment : Fragment() {
     private fun showAboutDialog() {
         val message = """
             Content Manager
-            Versión 1.0
+            Versión 1.1
 
             Gestiona tus libros, series y películas.
 
             Características:
             • CRUD completo
             • Búsqueda en tiempo real
+            • Filtros por estado
             • Estadísticas detalladas
             • Exportar/Importar datos
+            • Configuración avanzada
 
             Desarrollado con AndroidIDE
         """.trimIndent()
@@ -398,6 +421,90 @@ class SettingsFragment : Fragment() {
             .setTitle("Acerca de")
             .setMessage(message)
             .setPositiveButton("OK", null)
+            .show()
+    }
+
+    // ========== CONFIGURACIÓN AVANZADA ==========
+
+    private fun showDateFormatDialog() {
+        val formats = arrayOf("DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD")
+        val examples = arrayOf("26/12/2025", "12/26/2025", "2025-12-26")
+        val currentFormat = preferencesManager.getDateFormat()
+        val currentIndex = formats.indexOf(currentFormat).coerceAtLeast(0)
+
+        val items = formats.mapIndexed { index, format ->
+            "$format (${examples[index]})"
+        }.toTypedArray()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Formato de fecha")
+            .setSingleChoiceItems(items, currentIndex) { dialog, which ->
+                preferencesManager.setDateFormat(formats[which])
+                Toast.makeText(
+                    requireContext(),
+                    "✅ Formato cambiado a ${formats[which]}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun showExportOptionsDialog() {
+        val includeNotes = preferencesManager.shouldIncludeNotes()
+        val includeLinks = preferencesManager.shouldIncludeLinks()
+
+        val checkedItems = booleanArrayOf(includeNotes, includeLinks)
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Opciones de exportación")
+            .setMultiChoiceItems(
+                arrayOf("Incluir notas", "Incluir enlaces web"),
+                checkedItems
+            ) { _, which, isChecked ->
+                when (which) {
+                    0 -> preferencesManager.setIncludeNotes(isChecked)
+                    1 -> preferencesManager.setIncludeLinks(isChecked)
+                }
+            }
+            .setPositiveButton("Guardar") { _, _ ->
+                Toast.makeText(
+                    requireContext(),
+                    "✅ Opciones guardadas",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun showPreferencesSummary() {
+        val summary = preferencesManager.getPreferencesSummary()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Configuración actual")
+            .setMessage(summary)
+            .setPositiveButton("OK", null)
+            .setNeutralButton("Resetear") { _, _ ->
+                confirmResetPreferences()
+            }
+            .show()
+    }
+
+    private fun confirmResetPreferences() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("⚠️ Resetear configuración")
+            .setMessage("¿Deseas restaurar todas las preferencias a sus valores por defecto?")
+            .setPositiveButton("Sí, resetear") { _, _ ->
+                preferencesManager.resetToDefaults()
+                Toast.makeText(
+                    requireContext(),
+                    "✅ Configuración reseteada a valores por defecto",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .setNegativeButton("Cancelar", null)
             .show()
     }
 

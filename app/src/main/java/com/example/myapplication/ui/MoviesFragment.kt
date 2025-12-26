@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.data.ContentManager
 import com.example.myapplication.data.Movie
+import com.example.myapplication.data.MovieStatus
 import com.example.myapplication.databinding.FragmentMoviesBinding
 
 class MoviesFragment : Fragment() {
@@ -19,6 +20,7 @@ class MoviesFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var contentManager: ContentManager
     private lateinit var adapter: MovieAdapter
+    private var currentFilter: String? = null // null = TODOS
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,6 +32,7 @@ class MoviesFragment : Fragment() {
 
         setupRecyclerView()
         setupSearchView()
+        setupChipFilters()
         setupFab()
         loadData()
 
@@ -49,16 +52,63 @@ class MoviesFragment : Fragment() {
         })
     }
 
-    private fun searchMovies(query: String) {
-        val movies = if (query.isBlank()) {
-            contentManager.movieDao.getAll()
-        } else {
-            contentManager.movieDao.search(query)
+    private fun setupChipFilters() {
+        binding.chipAll.setOnClickListener {
+            currentFilter = null
+            searchMovies(binding.searchView.query.toString())
         }
-        adapter.updateItems(movies)
 
-        if (movies.isEmpty()) {
-            binding.emptyText.text = if (query.isBlank()) "No hay películas" else "No se encontraron resultados"
+        binding.chipVista.setOnClickListener {
+            currentFilter = MovieStatus.VISTA.name
+            searchMovies(binding.searchView.query.toString())
+        }
+
+        binding.chipEnCurso.setOnClickListener {
+            currentFilter = MovieStatus.EN_CURSO.name
+            searchMovies(binding.searchView.query.toString())
+        }
+
+        binding.chipPendiente.setOnClickListener {
+            currentFilter = MovieStatus.PENDIENTE.name
+            searchMovies(binding.searchView.query.toString())
+        }
+    }
+
+    private fun searchMovies(query: String) {
+        // Obtener películas según filtro de estado
+        val allMovies = when (currentFilter) {
+            null -> {
+                // TODOS: buscar o mostrar todos
+                if (query.isBlank()) {
+                    contentManager.movieDao.getAll()
+                } else {
+                    contentManager.movieDao.search(query)
+                }
+            }
+            else -> {
+                // Filtrado por estado
+                val estadoEnum = MovieStatus.valueOf(currentFilter!!)
+                val moviesByStatus = contentManager.movieDao.getByEstado(estadoEnum)
+                // Si hay búsqueda, filtrar dentro de los resultados por estado
+                if (query.isBlank()) {
+                    moviesByStatus
+                } else {
+                    moviesByStatus.filter { movie ->
+                        movie.titulo.contains(query, ignoreCase = true) ||
+                        (movie.plataforma?.contains(query, ignoreCase = true) == true)
+                    }
+                }
+            }
+        }
+
+        adapter.updateItems(allMovies)
+
+        if (allMovies.isEmpty()) {
+            binding.emptyText.text = if (query.isBlank() && currentFilter == null) {
+                "No hay películas"
+            } else {
+                "No se encontraron resultados"
+            }
             binding.emptyText.visibility = View.VISIBLE
             binding.recyclerView.visibility = View.GONE
         } else {
