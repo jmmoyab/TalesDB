@@ -1,6 +1,7 @@
 package com.example.myapplication.data
 
 import android.content.Context
+import android.os.Environment
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import java.io.File
@@ -10,6 +11,18 @@ class ImportHelper(private val context: Context) {
 
     private val contentManager = ContentManager(context)
     private val gson = Gson()
+
+    /**
+     * Obtener directorio público de exportación (mismo que ExportHelper)
+     */
+    private fun getPublicExportDirectory(): File {
+        val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+        val exportDir = File(documentsDir, "ContentManager")
+        if (!exportDir.exists()) {
+            exportDir.mkdirs()
+        }
+        return exportDir
+    }
 
     /**
      * Importar datos desde archivo JSON
@@ -196,7 +209,7 @@ class ImportHelper(private val context: Context) {
      * Listar archivos JSON disponibles para importar
      */
     fun listAvailableJsonFiles(): List<File> {
-        val exportDir = File(context.getExternalFilesDir(null), "exports")
+        val exportDir = getPublicExportDirectory()
         if (!exportDir.exists()) {
             return emptyList()
         }

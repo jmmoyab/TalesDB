@@ -1,6 +1,7 @@
 package com.example.myapplication.data
 
 import android.content.Context
+import android.os.Environment
 import com.google.gson.GsonBuilder
 import java.io.File
 import java.io.FileWriter
@@ -13,15 +14,25 @@ class ExportHelper(private val context: Context) {
     private val gson = GsonBuilder().setPrettyPrinting().create()
 
     /**
+     * Obtener directorio público de exportación (accesible desde explorador de archivos)
+     */
+    private fun getPublicExportDirectory(): File {
+        // Usar Documents/ContentManager/ que es accesible públicamente
+        val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+        val exportDir = File(documentsDir, "ContentManager")
+        if (!exportDir.exists()) {
+            exportDir.mkdirs()
+        }
+        return exportDir
+    }
+
+    /**
      * Exportar todos los datos a formato JSON
      * @return File del archivo JSON creado
      */
     fun exportToJson(): File {
-        // Crear directorio de exportación si no existe
-        val exportDir = File(context.getExternalFilesDir(null), "exports")
-        if (!exportDir.exists()) {
-            exportDir.mkdirs()
-        }
+        // Usar directorio público accesible
+        val exportDir = getPublicExportDirectory()
 
         // Nombre del archivo con timestamp
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
@@ -57,11 +68,8 @@ class ExportHelper(private val context: Context) {
      * @return File del archivo TXT creado
      */
     fun exportToText(): File {
-        // Crear directorio de exportación si no existe
-        val exportDir = File(context.getExternalFilesDir(null), "exports")
-        if (!exportDir.exists()) {
-            exportDir.mkdirs()
-        }
+        // Usar directorio público accesible
+        val exportDir = getPublicExportDirectory()
 
         // Nombre del archivo con timestamp
         val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
@@ -230,11 +238,7 @@ class ExportHelper(private val context: Context) {
      * Obtener el directorio de exportación
      */
     fun getExportDirectory(): File {
-        val exportDir = File(context.getExternalFilesDir(null), "exports")
-        if (!exportDir.exists()) {
-            exportDir.mkdirs()
-        }
-        return exportDir
+        return getPublicExportDirectory()
     }
 
     /**
