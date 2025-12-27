@@ -831,7 +831,46 @@ buildTypes {
 
 ---
 
-**Estado:** ✅ **VERSIÓN 1.1 COMPLETA - FILTROS Y CONFIGURACIÓN AVANZADA**
+### XI. Modo Oscuro/Claro
+
+| Elemento | Descripción | Estado |
+|----------|-------------|--------|
+| ThemeMode enum | DARK, LIGHT, AUTO | ✅ Completo |
+| PreferencesManager | Funciones get/setThemeMode | ✅ Completo |
+| MainActivity | Aplicar tema al inicio | ✅ Completo |
+| SettingsFragment | Diálogo de selección de tema | ✅ Completo |
+| Cambio inmediato | Sin reiniciar la app | ✅ Completo |
+
+**Funcionalidades implementadas:**
+- ✅ 3 modos: 🌙 Oscuro, ☀️ Claro, 🔄 Automático
+- ✅ Cambio inmediato sin reiniciar
+- ✅ Persistencia con SharedPreferences
+- ✅ Aplicación automática al abrir la app
+
+### XII. Backup de Base de Datos SQLite
+
+| Archivo | Descripción | Estado |
+|---------|-------------|--------|
+| BackupHelper.kt | Gestión de backups de BD | ✅ Completo |
+| createBackup() | Copia directa del archivo .db | ✅ Completo |
+| restoreBackup() | Restauración con seguridad | ✅ Completo |
+| listAvailableBackups() | Lista ordenada por fecha | ✅ Completo |
+
+**Funcionalidades implementadas:**
+- ✅ Crear backup completo de la base de datos
+- ✅ Restaurar desde backup con confirmación
+- ✅ Backup temporal de seguridad durante restauración
+- ✅ Reinicio automático de app tras restaurar
+- ✅ Directorio: /Documents/ContentManager/backups/
+- ✅ Mantiene IDs originales (ventaja vs JSON)
+
+---
+
+**Estado:** ✅ **VERSIÓN 1.2 COMPLETA - TALESDB**
+
+**Nombre de la app:** TalesDB
+**Application ID:** com.talesdb.app
+**Versión:** 1.2
 
 **La app ya tiene:**
 - ✅ Navegación completa con 5 pestañas
@@ -839,16 +878,18 @@ buildTypes {
 - ✅ CRUD completo para Books, Series y Movies
 - ✅ Formularios de entrada con validación
 - ✅ Búsqueda en tiempo real en las 3 secciones
-- ✅ **Filtros por estado** (NUEVO v1.1)
-- ✅ **Combinación de filtros + búsqueda** (NUEVO v1.1)
+- ✅ **Filtros por estado** (v1.1)
+- ✅ **Combinación de filtros + búsqueda** (v1.1)
 - ✅ Estadísticas completas (resumen, por estado, por año, por mes)
 - ✅ Exportar/Importar JSON y TXT
+- ✅ **Directorio público accesible** (/Documents/ContentManager/)
 - ✅ Pantalla de Configuración completa
-- ✅ **Configuración avanzada** (NUEVO v1.1)
-- ✅ **Formato de fecha personalizable** (NUEVO v1.1)
+- ✅ **Configuración avanzada** (v1.1)
+- ✅ **Formato de fecha personalizable** (v1.1)
+- ✅ **Modo Oscuro/Claro** (v1.2)
+- ✅ **Backup de Base de Datos SQLite** (v1.2)
 - ✅ Compartir archivos exportados
 - ✅ Es completamente usable para gestionar contenido
 
-**Próxima sesión (Versión 1.2):**
-1. Backup de Base de Datos SQLite
-2. Modo Oscuro/Claro
+**Próxima sesión (Versión 1.3+):**
+- Funcionalidades opcionales según necesidad del usuario
