@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.talesdb.app"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.talesdb.app"
         minSdk = 21
         targetSdk = 33
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.2"
 
         vectorDrawables {
             useSupportLibrary = true
