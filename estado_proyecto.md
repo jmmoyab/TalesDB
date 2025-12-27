@@ -869,8 +869,11 @@ buildTypes {
 **Estado:** ✅ **VERSIÓN 1.2 COMPLETA - TALESDB**
 
 **Nombre de la app:** TalesDB
-**Application ID:** com.talesdb.app
+**Application ID:** com.example.myapplication (mantenido para compatibilidad con versiones instaladas)
+**Namespace:** com.example.myapplication
 **Versión:** 1.2
+
+**Nota:** El namespace debe coincidir con la estructura de paquetes del código. El applicationId puede cambiarse para distribución nueva, pero requiere desinstalar versiones previas.
 
 **La app ya tiene:**
 - ✅ Navegación completa con 5 pestañas

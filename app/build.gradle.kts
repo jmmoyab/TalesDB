@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.talesdb.app"
+    namespace = "com.example.myapplication"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.talesdb.app"
+        applicationId = "com.example.myapplication"
         minSdk = 21
         targetSdk = 33
         versionCode = 1
