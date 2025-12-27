@@ -289,6 +289,45 @@ Sin el keystore original, NO se pueden publicar actualizaciones. Debe guardarse 
 
 ---
 
+## 🧪 Testing Realizado
+
+### Prueba 1: Debug Build ✅ EXITOSA
+- APK generado correctamente con nombre "TalesDB"
+- Instalación exitosa
+- App funciona correctamente
+- **Observación importante:** Datos persisten al desinstalar y reinstalar
+
+### Comportamiento de Auto Backup (Descubierto)
+**Problema observado:** Al desinstalar y reinstalar, los datos de la BD persisten
+
+**Explicación:**
+- AndroidManifest.xml tiene `android:allowBackup="true"` (línea 12)
+- Android hace backup automático de `/data/data/com.example.myapplication/`
+- Incluye: Base de datos SQLite + SharedPreferences
+- Se restaura al reinstalar en el mismo dispositivo con mismo applicationId
+
+**Ubicaciones de datos:**
+1. **Base de datos (privada):** `/data/data/com.example.myapplication/databases/content_manager.db`
+   - Respaldada por Auto Backup de Android
+   - Persiste al reinstalar en mismo dispositivo
+2. **Exports/Backups (públicos):** `/storage/emulated/0/Documents/ContentManager/`
+   - Siempre persisten (directorio público)
+   - No afectados por desinstalación
+
+**Decisión:** Mantener `allowBackup="true"`
+- ✅ Usuarios no pierden datos al reinstalar
+- ✅ Comportamiento esperado para app de gestión de contenido
+- ✅ Ya hay función "Borrar todos los datos" para testing limpio
+
+**Para testing limpio:** Usar `adb shell pm clear com.example.myapplication` o botón de borrar datos en la app
+
+### Prueba 2: Release Build ⏳ PENDIENTE
+- Usuario va a probar compilación release
+- Con namespace corregido debería compilar sin problemas
+- APK esperado en: `app/build/outputs/apk/release/app-release.apk`
+
+---
+
 ## ✅ Checklist de Cierre de Sesión
 
 - [x] Fix aplicado: namespace revertido a com.example.myapplication
@@ -297,11 +336,14 @@ Sin el keystore original, NO se pueden publicar actualizaciones. Debe guardarse 
 - [x] ultima_claude.md creado
 - [x] Usuario informado sobre testing debug/release
 - [x] Preparada documentación completa para distribución
+- [x] Debug build testeado exitosamente
+- [x] Explicado comportamiento de Auto Backup
+- [x] Release build pendiente de testing
 
 ---
 
-**Próxima sesión:** Configuración de release build, firma de APK y distribución
+**Próxima sesión:** Continuar con testing de release build, luego configuración de signing y distribución
 
-**Recomendación:** Empezar creando el keystore y configurando signing, luego generar primer APK release para testing
+**Recomendación:** Verificar que release compila correctamente, luego decidir sobre keystore y plataforma de distribución
 
-**Estado final:** ✅ Todo documentado y listo para próxima fase
+**Estado final:** ✅ Debug testeado OK, Release pendiente, documentación completa
