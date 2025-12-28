@@ -109,6 +109,11 @@ class SettingsFragment : Fragment() {
             showClearDataDialog()
         }
 
+        // Ayuda
+        binding.btnHelp.setOnClickListener {
+            showHelpDialog()
+        }
+
         // Acerca de
         binding.btnAbout.setOnClickListener {
             showAboutDialog()
@@ -689,6 +694,97 @@ class SettingsFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    // ========== AYUDA Y ACERCA DE ==========
+
+    /**
+     * Mostrar diálogo de ayuda con guía rápida
+     */
+    private fun showHelpDialog() {
+        val guideMessage = """
+            📚 LIBROS
+            • Toca el botón + para agregar un nuevo libro
+            • Puedes registrar título, autor, páginas, saga y más
+            • Marca tu progreso: Leído, En Curso o Pendiente
+
+            📺 SERIES
+            • Lleva el control de temporadas y capítulos
+            • Registra la plataforma donde la ves
+            • Estados: Terminada, En Curso, Pendiente, En Espera
+
+            🎬 PELÍCULAS
+            • Crea tu catálogo personal
+            • Registra duración, plataforma y estado
+            • Añade fechas de visualización
+
+            🔍 BÚSQUEDA
+            • Usa la barra de búsqueda en cada pestaña
+            • Filtra por estado con los chips
+            • Encuentra contenido rápidamente
+
+            📊 ESTADÍSTICAS
+            • Visualiza resúmenes de tu contenido
+            • Estadísticas por año y mes
+            • Contadores por estado
+
+            ⚙️ CONFIGURACIÓN
+            • Exporta tus datos a JSON o TXT
+            • Crea backups de la base de datos
+            • Personaliza tema, formato de fecha y más
+            • Encuentra tus archivos en: Documents/ContentManager/
+
+            💡 TIPS
+            • Todos tus datos son privados y locales
+            • No necesitas internet para usar la app
+            • Haz backups regularmente para no perder información
+            • Puedes cambiar el tema en Configuración
+        """.trimIndent()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("📖 Guía Rápida de Uso")
+            .setMessage(guideMessage)
+            .setPositiveButton("Entendido", null)
+            .show()
+    }
+
+    /**
+     * Mostrar diálogo "Acerca de" con información de la app
+     */
+    private fun showAboutDialog() {
+        val aboutMessage = """
+            TalesDB - Gestor Personal de Contenido
+
+            Versión: 1.2.0 (versionCode 2)
+
+            Una aplicación simple y privada para gestionar tus libros, series y películas favoritas.
+
+            ✨ Características:
+            • 100% offline - sin internet requerido
+            • Privacidad total - tus datos solo en tu dispositivo
+            • Sin publicidad ni rastreadores
+            • Código limpio y eficiente
+
+            📁 Ubicación de datos:
+            • Base de datos: Almacenamiento interno de la app
+            • Exportaciones: Documents/ContentManager/
+
+            💾 Respaldo de datos:
+            • Exporta regularmente a JSON
+            • Crea backups de la base de datos
+            • Guarda tus archivos en lugar seguro
+
+            🎨 Personalización:
+            • Modo oscuro/claro/automático
+            • Formato de fecha personalizable
+            • Opciones de exportación configurables
+        """.trimIndent()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("ℹ️ Acerca de TalesDB")
+            .setMessage(aboutMessage)
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     private fun updateStats() {

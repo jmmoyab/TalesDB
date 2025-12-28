@@ -1,6 +1,7 @@
 package com.example.myapplication.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,139 +12,151 @@ import com.example.myapplication.databinding.FragmentStatsBinding
 class StatsFragment : Fragment() {
 
     private var _binding: FragmentStatsBinding? = null
-    private val binding get() = _binding!!
     private lateinit var contentManager: ContentManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentStatsBinding.inflate(inflater, container, false)
-        contentManager = ContentManager(requireContext())
+    ): View? {
+        return try {
+            _binding = FragmentStatsBinding.inflate(inflater, container, false)
+            contentManager = ContentManager(requireContext())
 
-        loadStats()
+            loadStats()
 
-        return binding.root
+            _binding?.root
+        } catch (e: Exception) {
+            Log.e("StatsFragment", "Error in onCreateView", e)
+            null
+        }
     }
 
     private fun loadStats() {
-        // Totales generales
-        val totalBooks = contentManager.bookDao.getAll().size
-        val totalSeries = contentManager.serieDao.getAll().size
-        val totalMovies = contentManager.movieDao.getAll().size
+        try {
+            // Validar que el binding y el fragmento estén OK
+            val binding = _binding ?: return
+            if (!isAdded) return
 
-        binding.textTotalBooks.text = totalBooks.toString()
-        binding.textTotalSeries.text = totalSeries.toString()
-        binding.textTotalMovies.text = totalMovies.toString()
+            // Totales generales
+            val totalBooks = contentManager.bookDao.getAll().size
+            val totalSeries = contentManager.serieDao.getAll().size
+            val totalMovies = contentManager.movieDao.getAll().size
 
-        // Estadísticas de libros por estado
-        val bookStats = contentManager.bookDao.getCountByEstado()
-        val booksStatsText = buildString {
-            bookStats.forEach { (estado, count) ->
-                append("• ${formatEstado(estado.name)}: $count\n")
+            binding.textTotalBooks.text = totalBooks.toString()
+            binding.textTotalSeries.text = totalSeries.toString()
+            binding.textTotalMovies.text = totalMovies.toString()
+
+            // Estadísticas de libros por estado
+            val bookStats = contentManager.bookDao.getCountByEstado()
+            val booksStatsText = buildString {
+                bookStats.forEach { (estado, count) ->
+                    append("• ${formatEstado(estado.name)}: $count\n")
+                }
+                if (isEmpty()) append("No hay libros registrados")
             }
-            if (isEmpty()) append("No hay libros registrados")
-        }
-        binding.textBooksStats.text = booksStatsText.trim()
+            binding.textBooksStats.text = booksStatsText.trim()
 
-        // Estadísticas de series por estado
-        val seriesStats = contentManager.serieDao.getCountByEstado()
-        val seriesStatsText = buildString {
-            seriesStats.forEach { (estado, count) ->
-                append("• ${formatEstado(estado.name)}: $count\n")
+            // Estadísticas de series por estado
+            val seriesStats = contentManager.serieDao.getCountByEstado()
+            val seriesStatsText = buildString {
+                seriesStats.forEach { (estado, count) ->
+                    append("• ${formatEstado(estado.name)}: $count\n")
+                }
+                if (isEmpty()) append("No hay series registradas")
             }
-            if (isEmpty()) append("No hay series registradas")
-        }
-        binding.textSeriesStats.text = seriesStatsText.trim()
+            binding.textSeriesStats.text = seriesStatsText.trim()
 
-        // Estadísticas de películas por estado
-        val moviesStats = contentManager.movieDao.getCountByEstado()
-        val moviesStatsText = buildString {
-            moviesStats.forEach { (estado, count) ->
-                append("• ${formatEstado(estado.name)}: $count\n")
+            // Estadísticas de películas por estado
+            val moviesStats = contentManager.movieDao.getCountByEstado()
+            val moviesStatsText = buildString {
+                moviesStats.forEach { (estado, count) ->
+                    append("• ${formatEstado(estado.name)}: $count\n")
+                }
+                if (isEmpty()) append("No hay películas registradas")
             }
-            if (isEmpty()) append("No hay películas registradas")
-        }
-        binding.textMoviesStats.text = moviesStatsText.trim()
+            binding.textMoviesStats.text = moviesStatsText.trim()
 
-        // Estadísticas de Libros por Año
-        val booksYearStats = contentManager.bookDao.getCountByYear()
-        val booksYearText = buildString {
-            booksYearStats.entries
-                .sortedByDescending { it.key }
-                .forEach { (year, count) ->
-                    append("• $year: $count libros\n")
-                }
-            if (isEmpty()) append("No hay libros con fechas registradas")
-        }
-        binding.textBooksYear.text = booksYearText.trim()
+            // Estadísticas de Libros por Año
+            val booksYearStats = contentManager.bookDao.getCountByYear()
+            val booksYearText = buildString {
+                booksYearStats.entries
+                    .sortedByDescending { it.key }
+                    .forEach { (year, count) ->
+                        append("• $year: $count libros\n")
+                    }
+                if (isEmpty()) append("No hay libros con fechas registradas")
+            }
+            binding.textBooksYear.text = booksYearText.trim()
 
-        // Estadísticas de Series por Año
-        val seriesYearStats = contentManager.serieDao.getCountByYear()
-        val seriesYearText = buildString {
-            seriesYearStats.entries
-                .sortedByDescending { it.key }
-                .forEach { (year, count) ->
-                    append("• $year: $count series\n")
-                }
-            if (isEmpty()) append("No hay series con fechas registradas")
-        }
-        binding.textSeriesYear.text = seriesYearText.trim()
+            // Estadísticas de Series por Año
+            val seriesYearStats = contentManager.serieDao.getCountByYear()
+            val seriesYearText = buildString {
+                seriesYearStats.entries
+                    .sortedByDescending { it.key }
+                    .forEach { (year, count) ->
+                        append("• $year: $count series\n")
+                    }
+                if (isEmpty()) append("No hay series con fechas registradas")
+            }
+            binding.textSeriesYear.text = seriesYearText.trim()
 
-        // Estadísticas de Películas por Año
-        val moviesYearStats = contentManager.movieDao.getCountByYear()
-        val moviesYearText = buildString {
-            moviesYearStats.entries
-                .sortedByDescending { it.key }
-                .forEach { (year, count) ->
-                    append("• $year: $count películas\n")
-                }
-            if (isEmpty()) append("No hay películas con fechas registradas")
-        }
-        binding.textMoviesYear.text = moviesYearText.trim()
+            // Estadísticas de Películas por Año
+            val moviesYearStats = contentManager.movieDao.getCountByYear()
+            val moviesYearText = buildString {
+                moviesYearStats.entries
+                    .sortedByDescending { it.key }
+                    .forEach { (year, count) ->
+                        append("• $year: $count películas\n")
+                    }
+                if (isEmpty()) append("No hay películas con fechas registradas")
+            }
+            binding.textMoviesYear.text = moviesYearText.trim()
 
-        // Estadísticas de Libros por Mes
-        val booksMonthStats = contentManager.bookDao.getCountByMonth()
-        val booksMonthText = buildString {
-            booksMonthStats.entries
-                .sortedByDescending { it.key }
-                .take(12)  // Últimos 12 meses
-                .forEach { (month, count) ->
-                    val formattedMonth = formatMonth(month)
-                    append("• $formattedMonth: $count libros\n")
-                }
-            if (isEmpty()) append("No hay libros con fechas registradas")
-        }
-        binding.textBooksMonth.text = booksMonthText.trim()
+            // Estadísticas de Libros por Mes
+            val booksMonthStats = contentManager.bookDao.getCountByMonth()
+            val booksMonthText = buildString {
+                booksMonthStats.entries
+                    .sortedByDescending { it.key }
+                    .take(12)  // Últimos 12 meses
+                    .forEach { (month, count) ->
+                        val formattedMonth = formatMonth(month)
+                        append("• $formattedMonth: $count libros\n")
+                    }
+                if (isEmpty()) append("No hay libros con fechas registradas")
+            }
+            binding.textBooksMonth.text = booksMonthText.trim()
 
-        // Estadísticas de Series por Mes
-        val seriesMonthStats = contentManager.serieDao.getCountByMonth()
-        val seriesMonthText = buildString {
-            seriesMonthStats.entries
-                .sortedByDescending { it.key }
-                .take(12)  // Últimos 12 meses
-                .forEach { (month, count) ->
-                    val formattedMonth = formatMonth(month)
-                    append("• $formattedMonth: $count series\n")
-                }
-            if (isEmpty()) append("No hay series con fechas registradas")
-        }
-        binding.textSeriesMonth.text = seriesMonthText.trim()
+            // Estadísticas de Series por Mes
+            val seriesMonthStats = contentManager.serieDao.getCountByMonth()
+            val seriesMonthText = buildString {
+                seriesMonthStats.entries
+                    .sortedByDescending { it.key }
+                    .take(12)  // Últimos 12 meses
+                    .forEach { (month, count) ->
+                        val formattedMonth = formatMonth(month)
+                        append("• $formattedMonth: $count series\n")
+                    }
+                if (isEmpty()) append("No hay series con fechas registradas")
+            }
+            binding.textSeriesMonth.text = seriesMonthText.trim()
 
-        // Estadísticas de Películas por Mes
-        val moviesMonthStats = contentManager.movieDao.getCountByMonth()
-        val moviesMonthText = buildString {
-            moviesMonthStats.entries
-                .sortedByDescending { it.key }
-                .take(12)  // Últimos 12 meses
-                .forEach { (month, count) ->
-                    val formattedMonth = formatMonth(month)
-                    append("• $formattedMonth: $count películas\n")
-                }
-            if (isEmpty()) append("No hay películas con fechas registradas")
+            // Estadísticas de Películas por Mes
+            val moviesMonthStats = contentManager.movieDao.getCountByMonth()
+            val moviesMonthText = buildString {
+                moviesMonthStats.entries
+                    .sortedByDescending { it.key }
+                    .take(12)  // Últimos 12 meses
+                    .forEach { (month, count) ->
+                        val formattedMonth = formatMonth(month)
+                        append("• $formattedMonth: $count películas\n")
+                    }
+                if (isEmpty()) append("No hay películas con fechas registradas")
+            }
+            binding.textMoviesMonth.text = moviesMonthText.trim()
+        } catch (e: Exception) {
+            Log.e("StatsFragment", "Error loading stats", e)
         }
-        binding.textMoviesMonth.text = moviesMonthText.trim()
     }
 
     private fun formatMonth(yearMonth: String): String {

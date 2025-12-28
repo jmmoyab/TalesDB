@@ -3,6 +3,7 @@ package com.example.myapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.example.myapplication.data.PreferencesManager
@@ -22,6 +23,15 @@ public class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Verificar si es la primera vez y mostrar pantalla de bienvenida
+        val prefsManager = PreferencesManager(this)
+        if (prefsManager.isFirstTime()) {
+            val intent = Intent(this, WelcomeActivity::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
 
         // Aplicar tema según preferencias antes de crear la vista
         applyTheme()

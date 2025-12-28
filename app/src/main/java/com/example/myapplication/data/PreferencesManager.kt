@@ -17,6 +17,7 @@ class PreferencesManager(context: Context) {
         private const val KEY_INCLUDE_NOTES = "include_notes"
         private const val KEY_INCLUDE_LINKS = "include_links"
         private const val KEY_THEME_MODE = "theme_mode"
+        private const val KEY_FIRST_TIME = "is_first_time"
 
         // Valores por defecto
         const val DEFAULT_DATE_FORMAT = "DD/MM/YYYY"
@@ -149,6 +150,23 @@ class PreferencesManager(context: Context) {
             "LIGHT" -> ThemeMode.LIGHT
             else -> ThemeMode.AUTO
         }
+    }
+
+    // ========== Primera vez ==========
+
+    /**
+     * Verificar si es la primera vez que se abre la app
+     * @return true si es la primera vez, false si ya se mostró la pantalla de bienvenida
+     */
+    fun isFirstTime(): Boolean {
+        return prefs.getBoolean(KEY_FIRST_TIME, true)
+    }
+
+    /**
+     * Marcar que ya se mostró la pantalla de bienvenida
+     */
+    fun setFirstTimeDone() {
+        prefs.edit().putBoolean(KEY_FIRST_TIME, false).apply()
     }
 
     // ========== Reset ==========
