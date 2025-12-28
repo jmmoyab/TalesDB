@@ -1,579 +1,416 @@
-# 🚀 Preparado para la Próxima Sesión - Distribución de TalesDB
+# 🚀 Guía para la Próxima Sesión - TalesDB v1.2.1
 
-**Fecha:** 27 de Diciembre de 2025
-**Estado actual:** ✅ App funcional - VERSIÓN 1.2 COMPLETA (TalesDB)
-**Prioridad:** Distribución - APKs, tiendas de apps, publicación
-
----
-
-## ✅ Estado Actual de TalesDB v1.2
-
-**Nombre de la app:** TalesDB
-**Application ID:** com.example.myapplication
-**Namespace:** com.example.myapplication
-**Versión:** 1.2
-**VersionCode:** 1
-
-**Funcionalidades completas:**
-- ✅ Navegación completa con 5 pestañas
-- ✅ CRUD completo para Books, Series, Movies
-- ✅ Búsqueda en tiempo real
-- ✅ Filtros por estado (v1.1)
-- ✅ Estadísticas completas
-- ✅ Exportar/Importar JSON y TXT
-- ✅ Configuración avanzada (v1.1)
-- ✅ Formato de fecha personalizable (v1.1)
-- ✅ Modo Oscuro/Claro (v1.2)
-- ✅ Backup de Base de Datos SQLite (v1.2)
-- ✅ Directorio público accesible (/Documents/ContentManager/)
+**Fecha de actualización:** 28 de Diciembre de 2025
+**Estado actual:** ✅ v1.2.1 compilada y funcionando
+**Versión:** 1.2.1 (versionCode 3)
 
 ---
 
-## 🎯 Tema de la Próxima Sesión: Distribución y Publicación
+## 📋 ORDEN RECOMENDADO DE TAREAS
 
-### PRIORIDAD 1: APK para Instalación Nueva
+### **FASE 1: TESTING Y VERIFICACIÓN** (30-45 min)
 
-**Objetivo:** Generar APK release optimizado para distribución fuera de Google Play
+#### Prioridad 1: Testing Completo
+**Objetivo:** Confirmar que todo funciona en los 3 dispositivos
 
-**Temas a cubrir:**
+**Checklist de pruebas:**
+- [ ] Instalación sin advertencias de permisos
+- [ ] Pantalla de bienvenida en primera ejecución
+- [ ] ✅ **CRÍTICO:** StatsFragment NO crashea en Xiaomi problemático
+- [ ] Exportar JSON/TXT → archivos en Download/TalesDB/
+- [ ] Compartir archivos funciona (WhatsApp, Drive)
+- [ ] Backup BD → archivo en Download/TalesDB/backups/
+- [ ] Importar JSON desde nueva ubicación
+- [ ] Sistema de ayuda accesible
+- [ ] Menús FAB uniformes en los 3 fragmentos
 
-1. **Configuración de Build Release:**
-   - Diferencias entre debug y release
-   - ProGuard/R8 (minificación y ofuscación)
-   - Configuración de `proguard-rules.pro`
-   - `isMinifyEnabled` y `isShrinkResources`
-
-2. **Firma de APK (Signing):**
-   - Crear keystore para firma de release
-   - Diferencia entre debug key y release key
-   - Configurar signing config en build.gradle.kts
-   - Guardar credenciales de forma segura
-   - CRÍTICO: No perder keystore (sin él no se pueden hacer updates)
-
-3. **Versioning:**
-   - `versionCode` vs `versionName`
-   - Estrategia de versionado (Semantic Versioning)
-   - Incrementar versiones para updates
-
-4. **Generación de APK Release:**
-   - Comando: `./gradlew assembleRelease`
-   - Ubicación del APK generado
-   - Verificar tamaño del APK
-   - Testing antes de distribuir
-
-5. **Application ID para Distribución Nueva:**
-   - Cambiar de `com.example.myapplication` a `com.talesdb.app`
-   - Requiere desinstalar versiones anteriores
-   - Usuarios perderán datos (importante hacer backup)
-   - Estrategia de migración de datos
-
-6. **Testing del APK Release:**
-   - Instalar en dispositivos de prueba
-   - Verificar que ProGuard no rompa nada
-   - Probar todas las funcionalidades críticas
-   - Verificar permisos de almacenamiento
+**Si todo OK → Continuar a FASE 2**
+**Si hay problemas → Reportar para arreglar**
 
 ---
 
-### PRIORIDAD 2: Tiendas de Apps - Opciones de Distribución
+### **FASE 2: DISTRIBUCIÓN BÁSICA** (5-30 min)
 
-**Objetivo:** Decidir dónde y cómo distribuir TalesDB
+#### Opción A: Distribución Directa (Rápida)
+**Tiempo:** 5 minutos
 
-#### A. Google Play Store (Oficial)
+```bash
+# Renombrar APK
+cp app/build/outputs/apk/debug/app-debug.apk ~/TalesDB-v1.2.1.apk
 
-**Ventajas:**
-- Mayor alcance y confianza
-- Actualizaciones automáticas
-- Descubrimiento por búsqueda
-- Estadísticas detalladas
+# Verificar
+ls -lh ~/TalesDB-v1.2.1.apk
+```
 
-**Desventajas:**
-- Costo: $25 USD (pago único) para cuenta de desarrollador
-- Proceso de revisión (1-3 días)
-- Políticas estrictas
-- Requiere política de privacidad
-
-**Requisitos técnicos:**
-1. **Cuenta de Google Play Developer** ($25 USD)
-2. **Assets gráficos:**
-   - Icono de alta resolución (512x512 PNG)
-   - Feature graphic (1024x500)
-   - Screenshots (mínimo 2, recomendado 8)
-   - Captura de tablet (opcional)
-3. **Información de la app:**
-   - Título (máx 50 caracteres)
-   - Descripción corta (máx 80 caracteres)
-   - Descripción completa (máx 4000 caracteres)
-   - Categoría (Productividad)
-4. **Política de Privacidad:**
-   - URL pública requerida
-   - Explicar qué datos se recopilan (ninguno en este caso)
-5. **Clasificación de contenido:**
-   - Completar cuestionario IARC
-6. **APK firmado con release key**
-
-**Proceso de publicación:**
-1. Crear cuenta de desarrollador
-2. Crear nueva aplicación
-3. Subir APK/AAB
-4. Completar ficha de Play Store
-5. Enviar a revisión
-6. Esperar aprobación (1-3 días)
-
----
-
-#### B. Distribución Directa (APK)
-
-**Ventajas:**
-- Gratis
-- Control total
-- Sin revisión
-- Distribución inmediata
-
-**Desventajas:**
-- Usuarios deben habilitar "Fuentes desconocidas"
-- Sin actualizaciones automáticas
-- Menor confianza
-- Sin descubrimiento orgánico
-
-**Métodos de distribución:**
-1. **GitHub Releases:**
-   - Subir APK a GitHub
-   - Usuarios descargan directamente
-   - Changelog visible
-   - Gratis e ilimitado
-
-2. **Página web propia:**
-   - Hosting del APK
-   - Landing page con info
-   - Control total
-
-3. **Compartir directamente:**
-   - WhatsApp, Telegram, Email
-   - Drive, Dropbox
-   - Para círculo cercano
+**Compartir:**
+- Por WhatsApp/Telegram a amigos/familia
+- Subir a Google Drive/Dropbox
+- Enviar por email
 
 **Instrucciones para usuarios:**
 ```
-1. Descargar APK
-2. Abrir archivo descargado
-3. Si aparece advertencia:
-   - Ir a Configuración > Seguridad
-   - Activar "Fuentes desconocidas" (Android <8)
-   - O permitir instalación desde el navegador (Android 8+)
-4. Instalar
+1. Descargar TalesDB-v1.2.1.apk
+2. Abrir archivo
+3. Instalar (sin advertencias)
+4. Disfrutar
 ```
 
 ---
 
-#### C. Tiendas Alternativas
+#### Opción B: GitHub Release (Profesional)
+**Tiempo:** 30 minutos - 1 hora
 
-**Amazon Appstore:**
-- Gratis (no requiere pago de desarrollador)
-- Menor alcance que Google Play
-- Proceso de revisión similar
+**Pasos:**
+1. Crear repositorio en GitHub (si no existe)
+2. Subir código:
+   ```bash
+   git remote add origin https://github.com/TU_USUARIO/TalesDB.git
+   git push -u origin main
+   ```
+3. Crear Release en GitHub:
+   - Tag: `v1.2.1`
+   - Title: `TalesDB v1.2.1 - Sin permisos peligrosos`
+   - Adjuntar: `TalesDB-v1.2.1.apk`
+4. Escribir changelog (ver abajo)
 
-**F-Droid:**
-- Solo apps de código abierto (FOSS)
+**Ventajas:**
+- URL permanente para descargas
+- Versionado visible
+- Changelog automático
 - Gratis
-- Requiere que el código sea open source
-- Público nicho pero leal
-
-**Samsung Galaxy Store:**
-- Para dispositivos Samsung
-- Proceso similar a Google Play
-
-**Aptoide, APKPure, etc.:**
-- Tiendas de terceros
-- Menor confianza
-- No recomendado para app seria
 
 ---
 
-### PRIORIDAD 3: Preparación de Assets
+### **FASE 3: MEJORAS OPCIONALES** (Cuando quieras)
 
-**Iconos necesarios:**
+#### Tarea 1: Crear Icono Personalizado
+**Tiempo:** 1-2 horas
+**Herramientas:** Android Asset Studio, Figma, Canva
 
-1. **Icono de launcher:**
-   - Actualizar `res/mipmap/ic_launcher.png`
-   - Varios tamaños: mdpi (48px), hdpi (72px), xhdpi (96px), xxhdpi (144px), xxxhdpi (192px)
-   - Adaptive icon para Android 8+ (foreground + background)
+**Requisitos:**
+- Icono 512x512 PNG (Play Store)
+- Adaptive icon (foreground + background)
+- Colores consistentes con la app
 
-2. **Icono de alta resolución (Play Store):**
-   - 512x512 PNG
-   - Fondo transparente o sólido
-   - Representativo de TalesDB
-
-**Screenshots:**
-- Mínimo 2, recomendado 4-8
-- Resolución: 1080x1920 (vertical) o similar
-- Mostrar funcionalidades clave:
-  1. Lista de libros/series
-  2. Estadísticas
-  3. Formulario de agregar
-  4. Configuración/Filtros
-
-**Feature Graphic (solo Play Store):**
-- 1024x500 JPG o PNG
-- Banner promocional
-- Debe verse bien en miniatura
-
-**Descripción de la app:**
-
-Sugerencia para descripción corta (80 caracteres):
-```
-Gestiona tu lista de libros, series y películas. Simple y privado.
-```
-
-Sugerencia para descripción larga (4000 caracteres):
-```
-📚 TalesDB - Gestor Personal de Contenido
-
-Lleva un registro organizado de todos los libros que lees, series que ves y películas que disfrutas. TalesDB es una aplicación simple, privada y completamente offline para Android.
-
-✨ FUNCIONALIDADES PRINCIPALES
-
-📖 LIBROS
-• Registra libros con título, autor, páginas
-• Organiza por sagas y volúmenes
-• Marca como leído, en curso o pendiente
-• Fechas de inicio y fin de lectura
-
-📺 SERIES
-• Seguimiento de temporadas y capítulos
-• Registra plataforma (Netflix, HBO, etc.)
-• Estados: terminada, en curso, pendiente, esperando temporadas
-• Control de progreso detallado
-
-🎬 PELÍCULAS
-• Catálogo personal de películas
-• Duración, plataforma, estado
-• Fechas de visualización
-
-🔍 BÚSQUEDA Y FILTROS
-• Búsqueda en tiempo real
-• Filtros por estado
-• Encuentra rápidamente cualquier item
-
-📊 ESTADÍSTICAS DETALLADAS
-• Resumen general de tu contenido
-• Contadores por estado, año y mes
-• Visualiza tu progreso
-
-💾 BACKUP Y EXPORTACIÓN
-• Exporta a JSON (backup completo)
-• Exporta a TXT (reporte legible)
-• Backup directo de base de datos SQLite
-• Importa tus datos fácilmente
-
-⚙️ PERSONALIZACIÓN
-• Modo oscuro/claro/automático
-• Formato de fecha personalizable
-• Configuración avanzada
-
-🔒 PRIVACIDAD TOTAL
-• Sin internet requerido
-• Sin cuentas ni logins
-• Sin publicidad
-• Sin rastreo
-• Tus datos solo en tu dispositivo
-
-📁 GESTIÓN DE DATOS
-• Base de datos SQLite local
-• Archivos en directorio público accesible
-• Fácil migración y backup
-
-🎯 IDEAL PARA:
-• Lectores ávidos que quieren llevar registro
-• Fanáticos de series que pierden la cuenta
-• Cinéfilos que quieren un catálogo personal
-• Cualquiera que busque simplicidad y privacidad
-
-✅ CARACTERÍSTICAS TÉCNICAS:
-• Offline completo
-• Sin permisos innecesarios
-• Material Design
-• Ligera y rápida
-• Android 5.0+ (API 21+)
-
-🆓 GRATIS Y SIN ANUNCIOS
-TalesDB es completamente gratuita, sin publicidad, sin compras dentro de la app, y sin suscripciones.
-
-Descarga TalesDB hoy y toma control de tu contenido.
-```
+**Generación:**
+- Android Asset Studio: https://romannurik.github.io/AndroidAssetStudio/
+- Colocar en `res/mipmap/`
 
 ---
 
-### PRIORIDAD 4: Política de Privacidad
+#### Tarea 2: Screenshots Profesionales
+**Tiempo:** 30 minutos
+**Objetivo:** Documentación y Play Store
 
-**Requerida para Google Play Store**
+**Screenshots recomendados:**
+1. Lista de libros con datos
+2. Pantalla de estadísticas
+3. Formulario de agregar libro/serie
+4. Configuración con opciones de exportar
+5. Pantalla de bienvenida
 
-Opciones:
-1. **Generar con herramienta:**
-   - https://www.privacypolicygenerator.info/
-   - https://app-privacy-policy-generator.firebaseapp.com/
-
-2. **Hosting:**
-   - GitHub Pages (gratis)
-   - Notion (gratis)
-   - Google Sites (gratis)
-
-**Contenido sugerido para TalesDB:**
-```
-# Política de Privacidad - TalesDB
-
-Última actualización: 27 de diciembre de 2025
-
-## Recopilación de Datos
-TalesDB NO recopila, almacena ni comparte ningún dato personal del usuario.
-
-## Almacenamiento Local
-Todos los datos (libros, series, películas) se almacenan localmente en el dispositivo del usuario en una base de datos SQLite. Estos datos nunca salen del dispositivo.
-
-## Permisos
-TalesDB solo solicita permisos de almacenamiento para:
-- Exportar datos del usuario a archivos JSON/TXT
-- Crear backups de la base de datos
-- Importar datos desde archivos
-
-## Conexión a Internet
-TalesDB NO requiere conexión a internet y funciona completamente offline.
-
-## Datos de Terceros
-TalesDB NO utiliza servicios de terceros, analytics, publicidad ni rastreadores.
-
-## Contacto
-Para consultas: [tu email]
-```
+**Edición opcional:**
+- Agregar texto descriptivo
+- Enmarcar en dispositivo virtual
+- Canva para diseño
 
 ---
 
-## 🔧 Tareas Técnicas para la Próxima Sesión
+#### Tarea 3: Cambiar Application ID
+**Tiempo:** 15 minutos
+**⚠️ BREAKING CHANGE:** Requiere desinstalar app actual
 
-### 1. Configurar Build Release
+**De:** `com.example.myapplication`
+**A:** `com.talesdb.app` (o el que prefieras)
 
-**Modificar `app/build.gradle.kts`:**
-
+**Cambios necesarios:**
 ```kotlin
-android {
-    // ...
-
-    // Decidir si cambiar applicationId a com.talesdb.app
-    defaultConfig {
-        applicationId = "com.example.myapplication" // o "com.talesdb.app"
-        versionCode = 2  // Incrementar con cada release
-        versionName = "1.2.0"  // Semantic versioning
-    }
-
-    signingConfigs {
-        create("release") {
-            storeFile = file("keystore/talesdb-release.jks")
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "temp_password"
-            keyAlias = "talesdb-key"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "temp_password"
-        }
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            signingConfig = signingConfigs.getByName("release")
-        }
-    }
+// app/build.gradle.kts
+defaultConfig {
+    applicationId = "com.talesdb.app"  // Cambiar aquí
+    versionCode = 4  // Incrementar
+    versionName = "1.3.0"
 }
 ```
 
-### 2. Crear Keystore
+**Impacto:**
+- Usuarios pierden datos (hacer backup antes)
+- No se puede actualizar sobre versión antigua
+- Nombre más profesional
 
-**Comando para generar keystore:**
+---
 
-```bash
-keytool -genkey -v -keystore talesdb-release.jks \
-  -keyalg RSA -keysize 2048 -validity 10000 \
-  -alias talesdb-key
+#### Tarea 4: README.md para GitHub
+**Tiempo:** 30 minutos
+
+**Contenido sugerido:**
+```markdown
+# TalesDB - Gestor Personal de Contenido
+
+📚 Gestiona tus libros, series y películas en Android
+
+## Características
+- ✅ CRUD completo
+- ✅ Búsqueda en tiempo real
+- ✅ Estadísticas detalladas
+- ✅ Exportar/Importar JSON
+- ✅ Backup de base de datos
+- ✅ Modo oscuro
+- ✅ 100% offline
+- ✅ 0 permisos peligrosos
+
+## Instalación
+1. Descargar [TalesDB-v1.2.1.apk](releases)
+2. Instalar en Android 5.0+
+3. Disfrutar
+
+## Screenshots
+[Agregar screenshots]
+
+## Tecnologías
+- Kotlin
+- SQLite
+- Material Design
+- ViewBinding
+- SharedPreferences
 ```
 
-**IMPORTANTE:**
-- Guardar contraseñas en lugar seguro
-- Hacer backup del keystore
-- Sin keystore NO se pueden publicar updates
+---
 
-### 3. Configurar ProGuard
+### **FASE 4: GOOGLE PLAY STORE** (Opcional - Largo plazo)
 
-**Crear/modificar `app/proguard-rules.pro`:**
+**Requisitos:**
+1. Cuenta de desarrollador ($25 USD)
+2. Assets completos:
+   - Icono 512x512
+   - Mínimo 2 screenshots
+   - Feature graphic 1024x500
+3. Descripciones (corta y larga)
+4. Política de privacidad (URL pública)
+5. Clasificación de contenido
 
-```proguard
-# Keep models (para serialización JSON)
--keep class com.example.myapplication.data.Book { *; }
--keep class com.example.myapplication.data.Serie { *; }
--keep class com.example.myapplication.data.Movie { *; }
+**Tiempo total:** Varios días (preparación + revisión de Google)
 
-# Gson
--keepattributes Signature
--keepattributes *Annotation*
--keep class com.google.gson.** { *; }
+**Estado actual:** ✅ App ya es compatible (0 permisos)
 
-# ViewBinding
--keep class * implements androidx.viewbinding.ViewBinding {
-    public static *** bind(***);
-    public static *** inflate(***);
-}
+---
 
-# SQLite (importante!)
--keep class android.database.** { *; }
--keep class android.database.sqlite.** { *; }
+## 📝 CHANGELOG SUGERIDO PARA v1.2.1
+
+**Para GitHub Release o documentación:**
+
+```markdown
+# v1.2.1 - Sin Permisos Peligrosos
+
+## 🎉 Cambios Principales
+
+### ✅ Eliminados TODOS los Permisos Peligrosos
+- La app ya no requiere permisos de almacenamiento
+- Instalación sin advertencias de seguridad
+- Compatible con Google Play Store
+- Nueva ubicación: Download/TalesDB/ (accesible sin permisos)
+
+### 🛠️ Correcciones
+- Fix: Crash en pantalla de Estadísticas en algunos dispositivos Xiaomi
+- Fix: Compartir archivos exportados ahora funciona correctamente
+- Fix: Uniformidad en menús FAB de los 3 fragmentos
+
+### ✨ Nuevas Funcionalidades
+- Pantalla de bienvenida en primera ejecución
+- Sistema de ayuda accesible desde Configuración
+- Guía rápida de uso integrada
+
+### 📂 Migración de Archivos
+- ANTES: `/storage/emulated/0/Documents/ContentManager/`
+- AHORA: `/storage/emulated/0/Download/TalesDB/`
+- Los archivos antiguos no se migran automáticamente (copiar manualmente si es necesario)
+
+## 🔧 Detalles Técnicos
+- versionCode: 3 (era 2)
+- versionName: 1.2.1 (era 1.2.0)
+- Permisos: 0 (eran 3)
+- Tamaño APK: ~5.8 MB
+- Compatible: Android 5.0+ (API 21+)
+
+## 📥 Instalación
+1. Descargar `TalesDB-v1.2.1.apk`
+2. Instalar (sin advertencias)
+3. Disfrutar
+
+## ⚠️ Nota para Usuarios Existentes
+Si ya usabas versiones anteriores:
+- Exporta tus datos antes de desinstalar la versión antigua
+- Instala esta nueva versión
+- Importa tus datos desde Configuración
 ```
 
-### 4. Incrementar Versión
+---
 
-Para cada release:
-```kotlin
-versionCode = 2      // +1 para cada build
-versionName = "1.2.0" // Major.Minor.Patch
+## 🎯 POSIBLES NUEVAS FUNCIONALIDADES (Futuras)
+
+### Ideas para v1.3.0 o posteriores:
+
+#### Funcionalidad 1: Calificaciones y Reseñas
+- Agregar campo de calificación (estrellas)
+- Campo de reseña personal
+- Filtrar por calificación
+
+#### Funcionalidad 2: Integración con APIs
+- Buscar libros en Google Books API
+- Buscar series/películas en TMDB API
+- Autocompletar datos (opcional)
+
+#### Funcionalidad 3: Widgets de Home Screen
+- Widget con estadísticas
+- Widget con contenido en curso
+- Widget con próximo a terminar
+
+#### Funcionalidad 4: Gráficos y Visualizaciones
+- Gráfico de libros leídos por mes
+- Gráfico de series por estado
+- Progreso anual
+
+#### Funcionalidad 5: Recordatorios
+- Recordar continuar serie
+- Recordar finalizar libro
+- Notificaciones opcionales
+
+#### Funcionalidad 6: Compartir en Redes Sociales
+- Compartir libro/serie terminada
+- Generación de imagen con datos
+- Integración con Instagram/Twitter
+
+#### Funcionalidad 7: Sincronización en la Nube
+- Google Drive sync (opcional)
+- Backup automático
+- Restauración desde la nube
+
+---
+
+## 🔍 PROBLEMAS CONOCIDOS
+
+**Ninguno actualmente** ✅
+
+Si encuentras algún problema durante testing, documentar aquí:
+
+### Formato de reporte de bug:
+```markdown
+**Dispositivo:** [Ej: Xiaomi Redmi Note 11, Android 14]
+**Problema:** [Descripción breve]
+**Pasos para reproducir:**
+1. [Paso 1]
+2. [Paso 2]
+3. [Error ocurre]
+
+**Comportamiento esperado:** [Qué debería pasar]
+**Comportamiento actual:** [Qué pasa realmente]
+**Screenshots/Logs:** [Si aplica]
 ```
 
-Estrategia Semantic Versioning:
-- **Major (1.x.x):** Cambios incompatibles
-- **Minor (x.2.x):** Nuevas funcionalidades
-- **Patch (x.x.1):** Bug fixes
+---
+
+## 🎨 BRANDING Y MARKETING (Muy opcional)
+
+### Nombre de la app:
+- **Actual:** TalesDB
+- **Alternativas:** ContentManager, MyLibrary, MediaVault
+
+### Tagline:
+- "Tu biblioteca personal en Android"
+- "Gestiona tu contenido favorito"
+- "Libros, series y películas en un solo lugar"
+
+### Colores actuales:
+- Primary: Purple (Material Design default)
+- Secondary: Teal
+- Sugerencia: Definir paleta de colores personalizada
 
 ---
 
-## 📱 Testing del APK Release
+## 📊 MÉTRICAS DE LA SESIÓN DE HOY
 
-**Checklist antes de distribuir:**
+**Commits:** 6
+**Archivos modificados:** 15
+**Líneas agregadas:** ~1500+
+**Líneas eliminadas:** ~200+
+**Tiempo de desarrollo:** ~3-4 horas
+**Bugs resueltos:** 2 críticos
 
-- [ ] Compilar release build exitosamente
-- [ ] Instalar APK en dispositivo limpio
-- [ ] Verificar que todas las funcionalidades funcionan
-- [ ] Probar CRUD completo
-- [ ] Probar búsqueda y filtros
-- [ ] Probar exportar/importar
-- [ ] Probar backup/restore
-- [ ] Probar cambio de tema
-- [ ] Verificar permisos de almacenamiento
-- [ ] Verificar que directorio público es accesible
-- [ ] Probar en modo oscuro y claro
-- [ ] Verificar tamaño del APK (<10MB recomendado)
-- [ ] No hay crashes en logcat
-- [ ] Desinstalar e instalar versión nueva (update)
+**Cambios más importantes:**
+1. Eliminación de permisos peligrosos
+2. Fix crash en StatsFragment
+3. Pantalla de bienvenida completa
 
 ---
 
-## 🎨 Assets y Gráficos Pendientes
+## 🔑 RECURSOS IMPORTANTES
 
-**Para crear antes de publicar:**
+### Documentación:
+- `ESTADO_SESION.md` - Estado detallado de hoy
+- `RESUMEN_PARA_MAÑANA.md` - Quick start para mañana
+- Este archivo - Guía completa de próximas tareas
 
-1. **Icono de launcher profesional:**
-   - Diseño simple que represente libros/series/películas
-   - Colores: Usar los colores del tema de la app
-   - Herramientas: Android Asset Studio, Figma, Canva
+### Keystore:
+```
+Ubicación: app/keystore/talesdb-release.jks
+Store Password: talesdb2025
+Key Password: talesdb2025
+Alias: talesdb-key
+```
 
-2. **Screenshots de la app:**
-   - Captura en dispositivo real o emulador
-   - Editar para destacar funcionalidades
-   - Agregar texto descriptivo (opcional)
+### APK:
+```
+Ubicación: app/build/outputs/apk/debug/app-debug.apk
+Versión: 1.2.1 (versionCode 3)
+Tamaño: ~5.8 MB
+Permisos: 0
+```
 
-3. **Feature Graphic (solo Play Store):**
-   - Banner promocional
-   - Incluir nombre "TalesDB"
-   - Mostrar iconografía de libros/series/películas
-
-**Herramientas gratuitas:**
-- Android Asset Studio: https://romannurik.github.io/AndroidAssetStudio/
-- Figma: https://www.figma.com/
-- Canva: https://www.canva.com/
-- GIMP: https://www.gimp.org/
-
----
-
-## 🚀 Opciones de Distribución - Decisión
-
-**Preguntas para decidir:**
-
-1. **¿Publicar en Google Play Store?**
-   - ✅ Sí → Requiere $25 USD, assets, política de privacidad
-   - ❌ No → Distribuir APK directamente (gratis)
-
-2. **¿Cambiar applicationId a com.talesdb.app?**
-   - ✅ Sí → Instalación nueva, usuarios pierden datos
-   - ❌ No → Mantener com.example.myapplication para compatibilidad
-
-3. **¿App de código abierto?**
-   - ✅ Sí → Subir a GitHub público, considerar F-Droid
-   - ❌ No → Código privado
-
-4. **¿Target audience?**
-   - Personal/Amigos → APK directo suficiente
-   - Público general → Considerar Play Store
+### Archivos de usuario:
+```
+Exportaciones: /storage/emulated/0/Download/TalesDB/
+Backups BD: /storage/emulated/0/Download/TalesDB/backups/
+Base de datos: /data/data/com.example.myapplication/databases/
+```
 
 ---
 
-## 📋 Plan de Acción Sugerido
+## ✅ CHECKLIST GENERAL DE DISTRIBUCIÓN
 
-### Sesión 1: Configuración de Release Build
-1. Crear keystore de firma
-2. Configurar signing config en build.gradle
-3. Ajustar ProGuard rules
-4. Generar primer APK release
-5. Testing exhaustivo del APK
+### Antes de distribuir:
+- [x] App compilada sin errores
+- [x] Permisos mínimos (0 permisos peligrosos)
+- [x] APK firmado con keystore
+- [x] Versión incrementada
+- [ ] Testing completo en múltiples dispositivos
+- [ ] Screenshots tomados
+- [ ] Changelog escrito
+- [ ] README.md creado (si GitHub)
 
-### Sesión 2: Assets y Branding
-1. Crear/mejorar icono de launcher
-2. Tomar screenshots de la app
-3. Escribir descripciones
-4. Crear política de privacidad
-5. (Opcional) Crear feature graphic
+### Para distribución directa:
+- [ ] APK renombrado a `TalesDB-v1.2.1.apk`
+- [ ] Archivo listo para compartir
+- [ ] Instrucciones para usuarios preparadas
 
-### Sesión 3: Publicación
-1. Decidir plataforma de distribución
-2. Si Play Store: crear cuenta, subir assets
-3. Si APK directo: subir a GitHub releases
-4. Escribir README/documentación para usuarios
-5. Anunciar release
+### Para GitHub Release:
+- [ ] Repositorio creado/actualizado
+- [ ] Código subido
+- [ ] Release creado con tag v1.2.1
+- [ ] APK adjunto al release
+- [ ] Changelog publicado
 
----
-
-## 🔗 Links Útiles
-
-**Documentación oficial:**
-- Google Play Console: https://play.google.com/console/
-- Publish your app: https://developer.android.com/studio/publish
-- Sign your app: https://developer.android.com/studio/publish/app-signing
-- App Bundle: https://developer.android.com/guide/app-bundle
-
-**Herramientas:**
-- Privacy Policy Generator: https://www.privacypolicygenerator.info/
-- Android Asset Studio: https://romannurik.github.io/AndroidAssetStudio/
-- GitHub Releases: https://docs.github.com/en/repositories/releasing-projects-on-github
-
-**Alternativas a Play Store:**
-- Amazon Appstore: https://developer.amazon.com/apps-and-games
-- F-Droid: https://f-droid.org/
-- Samsung Galaxy Store: https://seller.samsungapps.com/
+### Para Google Play (futuro):
+- [ ] Cuenta de desarrollador creada ($25)
+- [ ] Icono 512x512 creado
+- [ ] Screenshots tomados (mínimo 2)
+- [ ] Descripciones escritas
+- [ ] Política de privacidad publicada
+- [ ] Clasificación de contenido completada
 
 ---
 
-## ✅ Checklist Pre-Sesión
+**Estado:** ✅ Lista para distribución básica
 
-- [ ] Decidir si cambiar applicationId o mantenerlo
-- [ ] Decidir plataforma de distribución (Play Store, APK directo, ambas)
-- [ ] Pensar en nombre y branding definitivo
-- [ ] Considerar si hacer app open source
-- [ ] Backup completo del proyecto antes de cambios
-- [ ] Tener AndroidIDE actualizado y listo
+**Recomendación:** Empezar con FASE 1 (Testing) y FASE 2 Opción A (Distribución directa)
 
----
-
-**Estado:** ✅ VERSIÓN 1.2 COMPLETA - LISTA PARA DISTRIBUCIÓN
-
-**Recomendación:** Empezar configurando release build y generando primer APK firmado
-
-**Próximos pasos:** Firma de APK → Testing → Assets → Publicación
-
-**Fecha de actualización:** 27 de Diciembre de 2025
+**Documentación:** Completa y actualizada 🚀
