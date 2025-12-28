@@ -6,6 +6,6 @@
     <!-- Permite compartir archivos externos privados de la app -->
     <external-files-path name="external_exports" path="exports/" />
 
-    <!-- Permite compartir archivos del directorio público Documents/ContentManager -->
-    <external-path name="public_documents" path="Documents/ContentManager/" />
+    <!-- Permite compartir archivos del directorio público Download/TalesDB -->
+    <external-path name="public_downloads" path="Download/TalesDB/" />
 </paths>

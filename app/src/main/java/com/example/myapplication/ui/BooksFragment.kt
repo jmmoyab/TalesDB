@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -147,66 +146,12 @@ class BooksFragment : Fragment() {
     }
 
     /**
-     * Mostrar menú del FAB con opciones
+     * Mostrar menú del FAB - solo agregar libro manualmente
      */
     private fun showFabMenu() {
-        val popup = PopupMenu(requireContext(), binding.fabAdd)
-
-        // Agregar opciones al menú
-        popup.menu.add(0, 1, 0, "➕ Agregar libro manualmente")
-        popup.menu.add(0, 2, 1, "📥 Importar desde JSON")
-
-        popup.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                1 -> {
-                    createBook()
-                    true
-                }
-                2 -> {
-                    importBooksFromJson()
-                    true
-                }
-                else -> false
-            }
-        }
-
-        popup.show()
-    }
-
-    /**
-     * Importar libros desde JSON (click largo en FAB)
-     */
-    private fun importBooksFromJson() {
-        val jsonFile = java.io.File("/storage/emulated/0/json_app/books_template.json")
-
-        if (!jsonFile.exists()) {
-            Toast.makeText(requireContext(), "❌ Archivo no encontrado", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        if (!jsonFile.canRead()) {
-            Toast.makeText(requireContext(), "❌ Sin permisos de lectura", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        Toast.makeText(requireContext(), "⏳ Importando datos...", Toast.LENGTH_SHORT).show()
-
-        try {
-            val importHelper = com.example.myapplication.data.ImportHelper(requireContext())
-            val result = importHelper.importFromJson(jsonFile, com.example.myapplication.data.ImportMode.AGREGAR)
-
-            Toast.makeText(
-                requireContext(),
-                result.message,
-                Toast.LENGTH_LONG
-            ).show()
-
-            if (result.success) {
-                loadData()
-            }
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), "❌ Error: ${e.message}", Toast.LENGTH_LONG).show()
-        }
+        // Simplificado: solo agregar libro manualmente
+        // La importación desde JSON se hace desde Configuración
+        createBook()
     }
 
     /**
