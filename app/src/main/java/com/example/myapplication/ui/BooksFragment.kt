@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -146,12 +147,26 @@ class BooksFragment : Fragment() {
     }
 
     /**
-     * Mostrar menú del FAB - solo agregar libro manualmente
+     * Mostrar menú del FAB con opciones
      */
     private fun showFabMenu() {
-        // Simplificado: solo agregar libro manualmente
+        val popup = PopupMenu(requireContext(), binding.fabAdd)
+
+        // Solo opción de agregar libro manualmente
         // La importación desde JSON se hace desde Configuración
-        createBook()
+        popup.menu.add(0, 1, 0, "➕ Agregar libro manualmente")
+
+        popup.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                1 -> {
+                    createBook()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        popup.show()
     }
 
     /**
