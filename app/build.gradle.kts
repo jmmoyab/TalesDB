@@ -12,24 +12,39 @@ android {
         applicationId = "com.example.myapplication"
         minSdk = 21
         targetSdk = 33
-        versionCode = 1
-        versionName = "1.2"
+        versionCode = 2
+        versionName = "1.2.0"
 
         vectorDrawables {
             useSupportLibrary = true
         }
 
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("keystore/talesdb-release.jks")
+            storePassword = "talesdb2025"
+            keyAlias = "talesdb-key"
+            keyPassword = "talesdb2025"
+        }
+    }
+
     buildTypes {
+        debug {
+            // Firmamos debug con el keystore release para distribución
+            signingConfig = signingConfigs.getByName("release")
+        }
+
         release {
-            isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            isMinifyEnabled = false
+            isShrinkResources = false
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
