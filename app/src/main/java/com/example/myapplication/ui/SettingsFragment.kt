@@ -422,31 +422,6 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun showAboutDialog() {
-        val message = """
-            Content Manager
-            Versión 1.1
-
-            Gestiona tus libros, series y películas.
-
-            Características:
-            • CRUD completo
-            • Búsqueda en tiempo real
-            • Filtros por estado
-            • Estadísticas detalladas
-            • Exportar/Importar datos
-            • Configuración avanzada
-
-            Desarrollado con AndroidIDE
-        """.trimIndent()
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("Acerca de")
-            .setMessage(message)
-            .setPositiveButton("OK", null)
-            .show()
-    }
-
     // ========== APARIENCIA ==========
 
     private fun showThemeDialog() {
