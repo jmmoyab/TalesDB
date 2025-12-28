@@ -730,7 +730,7 @@ class SettingsFragment : Fragment() {
         val aboutMessage = """
             TalesDB - Gestor Personal de Contenido
 
-            Versión: 1.2.0 (versionCode 2)
+            Versión: 1.2.1 (versionCode 3)
 
             Una aplicación simple y privada para gestionar tus libros, series y películas favoritas.
 
