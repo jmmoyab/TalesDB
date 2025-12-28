@@ -19,10 +19,11 @@ class BackupHelper(private val context: Context) {
 
     /**
      * Obtener directorio público de backups (mismo que exportaciones)
+     * Android 10+ (API 29+): Usa Download/ que es accesible sin permisos
      */
     private fun getPublicBackupDirectory(): File {
-        val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-        val backupDir = File(documentsDir, "ContentManager/backups")
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val backupDir = File(downloadsDir, "TalesDB/backups")
         if (!backupDir.exists()) {
             backupDir.mkdirs()
         }

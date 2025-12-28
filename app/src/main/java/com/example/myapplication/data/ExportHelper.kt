@@ -15,11 +15,12 @@ class ExportHelper(private val context: Context) {
 
     /**
      * Obtener directorio público de exportación (accesible desde explorador de archivos)
+     * Android 10+ (API 29+): Usa Download/ que es accesible sin permisos
      */
     private fun getPublicExportDirectory(): File {
-        // Usar Documents/ContentManager/ que es accesible públicamente
-        val documentsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-        val exportDir = File(documentsDir, "ContentManager")
+        // Usar Download/TalesDB/ - accesible sin permisos en Android 10+
+        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val exportDir = File(downloadsDir, "TalesDB")
         if (!exportDir.exists()) {
             exportDir.mkdirs()
         }

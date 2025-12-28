@@ -707,7 +707,7 @@ class SettingsFragment : Fragment() {
             • Exporta tus datos a JSON o TXT
             • Crea backups de la base de datos
             • Personaliza tema, formato de fecha y más
-            • Encuentra tus archivos en: Documents/ContentManager/
+            • Encuentra tus archivos en: Download/TalesDB/
 
             💡 TIPS
             • Todos tus datos son privados y locales
@@ -742,7 +742,8 @@ class SettingsFragment : Fragment() {
 
             📁 Ubicación de datos:
             • Base de datos: Almacenamiento interno de la app
-            • Exportaciones: Documents/ContentManager/
+            • Exportaciones: Download/TalesDB/
+            • Backups: Download/TalesDB/backups/
 
             💾 Respaldo de datos:
             • Exporta regularmente a JSON
