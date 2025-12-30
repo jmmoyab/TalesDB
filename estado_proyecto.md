@@ -866,12 +866,13 @@ buildTypes {
 
 ---
 
-**Estado:** ✅ **VERSIÓN 1.2 COMPLETA - TALESDB**
+**Estado:** ✅ **VERSIÓN 1.2.3 COMPLETA - TALESDB**
 
 **Nombre de la app:** TalesDB
 **Application ID:** com.example.myapplication (mantenido para compatibilidad con versiones instaladas)
 **Namespace:** com.example.myapplication
-**Versión:** 1.2
+**Versión:** 1.2.3 (versionCode 5)
+**Última actualización:** 30 de Diciembre 2025
 
 **Nota:** El namespace debe coincidir con la estructura de paquetes del código. El applicationId puede cambiarse para distribución nueva, pero requiere desinstalar versiones previas.
 
@@ -885,17 +886,26 @@ buildTypes {
 - ✅ **Combinación de filtros + búsqueda** (v1.1)
 - ✅ Estadísticas completas (resumen, por estado, por año, por mes)
 - ✅ Exportar/Importar JSON y TXT
-- ✅ **Directorio público accesible** (/Documents/ContentManager/)
+- ✅ **Directorio público accesible** (/Download/TalesDB/)
 - ✅ Pantalla de Configuración completa
 - ✅ **Configuración avanzada** (v1.1)
 - ✅ **Formato de fecha personalizable** (v1.1)
 - ✅ **Modo Oscuro/Claro** (v1.2)
 - ✅ **Backup de Base de Datos SQLite** (v1.2)
+- ✅ **Pantalla de Bienvenida funcional** (v1.2.2)
+- ✅ **Botón Salir de la aplicación** (v1.2.2)
+- ✅ **Storage Access Framework (SAF)** para importar/restaurar (v1.2.2)
+- ✅ **Instrucciones claras en SAF** (v1.2.2)
+- ✅ **Icono profesional personalizado** (v1.2.3)
+- ✅ **0 permisos peligrosos** (v1.2.2)
 - ✅ Compartir archivos exportados
 - ✅ Es completamente usable para gestionar contenido
+- ✅ Testing completo en 4 dispositivos Xiaomi
 
-**Próxima sesión (Versión 1.3+):**
-- Funcionalidades opcionales según necesidad del usuario
+**Próximas opciones (Versión 1.3+ o 1.4+):**
+- Distribución directa APK (YA LISTA)
+- Preparación para Google Play Store
+- Nuevas funcionalidades opcionales según necesidad
 
 ---
 
