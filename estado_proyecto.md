@@ -967,3 +967,48 @@ release {
 **Versión 1.3.1+:** Actualizaciones en Play Store
 - Incrementar versionCode para cada release
 - Usuarios actualizan automáticamente
+
+---
+
+## 📝 Tareas Pendientes del Proyecto
+
+### Documentación (No urgente)
+- [ ] **Actualizar TUTORIAL_COMPLETO.md** a v1.2.3
+  - Fecha actual: 21-Nov-2025 (v1.0)
+  - Falta: Filtros, Config avanzada, Modo oscuro, Backup, SAF, Icono
+  - Directorio desactualizado: /Documents/ContentManager/ → /Download/TalesDB/
+  - Tiempo estimado: 30-40 minutos
+
+- [ ] **Crear GUIA_USUARIO.md** (para usuarios finales)
+  - Cómo usar la app (no desarrollo)
+  - Instalación desde APK
+  - Funcionalidades básicas
+  - Tiempo estimado: 20 minutos
+
+### Seguridad (IMPORTANTE)
+- [ ] **Backup del Keystore**
+  - Archivo: app/keystore/talesdb-release.jks
+  - Password: talesdb2025
+  - Copiar a: Google Drive, USB, o gestor de contraseñas
+  - ⚠️ SIN ESTE ARCHIVO NO PODRÁS ACTUALIZAR LA APP
+
+### Distribución (Cuando decidas)
+- [ ] Renombrar APK a nombre amigable (TalesDB-v1.2.3.apk)
+- [ ] Distribuir a usuarios de prueba
+- [ ] Recolectar feedback
+
+### Google Play Store (Opcional - Requiere $25 USD)
+- [ ] Screenshots (2-8 capturas)
+- [ ] Descripciones (corta + larga)
+- [ ] Feature graphic 1024x500
+- [ ] Política de privacidad (URL pública)
+- [ ] Cuenta de desarrollador
+- [ ] Optimizaciones APK (v1.3.0)
+
+### Futuras Funcionalidades (Ideas)
+- [ ] Calificaciones con estrellas (v1.4.0)
+- [ ] Integración APIs (Google Books, TMDB)
+- [ ] Widgets de home screen
+- [ ] Gráficos visuales (MPAndroidChart)
+- [ ] Swipe to delete
+- [ ] Más temas de color
