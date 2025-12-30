@@ -4,8 +4,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-        SIN PERMISOS PELIGROSOS
-        Android 10+ (API 29+) permite acceso a Download/ sin permisos especiales
+        SIN PERMISOS PELIGROSOS (v1.2.2+)
+        - Escribir en Download/ NO requiere permisos (Android 10+)
+        - Leer archivos: Usa Storage Access Framework (selector nativo)
+        - El usuario selecciona manualmente el archivo a importar/restaurar
         Los archivos se guardan en: /storage/emulated/0/Download/TalesDB/
     -->
 
@@ -17,14 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- Actividad principal -->
+        <!-- Actividad principal (LAUNCHER) -->
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
-
-        <!-- Actividad de bienvenida (LAUNCHER) -->
-        <activity
-            android:name=".WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action
@@ -33,6 +30,11 @@
                     android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Actividad de bienvenida -->
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="false" />
 
         <!-- FileProvider para compartir archivos exportados -->
         <provider

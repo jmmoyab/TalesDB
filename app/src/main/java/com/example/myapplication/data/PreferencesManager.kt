@@ -17,7 +17,7 @@ class PreferencesManager(context: Context) {
         private const val KEY_INCLUDE_NOTES = "include_notes"
         private const val KEY_INCLUDE_LINKS = "include_links"
         private const val KEY_THEME_MODE = "theme_mode"
-        private const val KEY_FIRST_TIME = "is_first_time"
+        private const val KEY_FIRST_TIME = "is_first_time_v2"  // v2: Forzar reset tras fix
 
         // Valores por defecto
         const val DEFAULT_DATE_FORMAT = "DD/MM/YYYY"

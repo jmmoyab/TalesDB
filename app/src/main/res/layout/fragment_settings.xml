@@ -369,6 +369,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Acerca de la aplicación"
+                    android:layout_marginBottom="8dp"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                <Button
+                    android:id="@+id/btnExitApp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="🚪 Salir de la aplicación"
                     style="@style/Widget.Material3.Button.OutlinedButton" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

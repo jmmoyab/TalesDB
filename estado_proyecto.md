@@ -896,3 +896,64 @@ buildTypes {
 
 **Próxima sesión (Versión 1.3+):**
 - Funcionalidades opcionales según necesidad del usuario
+
+---
+
+## 📋 Tareas Pendientes para Google Play Store
+
+### ANTES de publicar en Play Store (v1.3.0 recomendada):
+
+#### 1. **Optimizaciones de APK** (PENDIENTE)
+**Archivo:** `app/build.gradle.kts`
+```kotlin
+release {
+    isMinifyEnabled = true         // Activar ProGuard/R8
+    isShrinkResources = true       // Comprimir recursos
+    proguardFiles(
+        getDefaultProguardFile("proguard-android-optimize.txt"),
+        "proguard-rules.pro"
+    )
+}
+```
+**Impacto:**
+- Reduce tamaño APK de ~5.8 MB a ~3.5 MB (40% reducción)
+- Ofusca código (protección contra ingeniería inversa)
+- Elimina recursos no usados
+- **Requiere nueva versión:** versionCode 4, versionName "1.3.0" (o mayor)
+
+#### 2. **Application ID profesional** (OPCIONAL)
+**Cambiar de:** `com.example.myapplication`
+**Cambiar a:** `com.talesdb.app` (o similar)
+- ⚠️ BREAKING CHANGE: Requiere desinstalar versiones previas
+- Solo hacer si nunca has distribuido la app públicamente
+- Si ya hay usuarios, mejor NO cambiar
+
+#### 3. **Assets requeridos por Play Store**
+- [ ] Icono de alta resolución (512x512 PNG)
+- [ ] Mínimo 2 screenshots (máximo 8)
+- [ ] Feature graphic (1024x500 PNG)
+- [ ] Descripciones (corta 80 caracteres, larga 4000 caracteres)
+- [ ] Política de privacidad (URL pública requerida)
+- [ ] Clasificación de contenido
+
+#### 4. **Cuenta de desarrollador**
+- Costo: $25 USD (pago único)
+- Registro en: https://play.google.com/console/signup
+
+---
+
+## 🔄 Flujo de Versiones Recomendado
+
+**Versión actual:** 1.2.1 (debug/release sin optimizar)
+- Desarrollo y testing
+- Distribución directa por APK
+
+**Versión 1.3.0:** Primera versión optimizada para Play Store
+- Activar `minifyEnabled = true`
+- Activar `isShrinkResources = true`
+- Testing completo (ProGuard puede causar bugs)
+- Crear proguard-rules.pro si es necesario
+
+**Versión 1.3.1+:** Actualizaciones en Play Store
+- Incrementar versionCode para cada release
+- Usuarios actualizan automáticamente

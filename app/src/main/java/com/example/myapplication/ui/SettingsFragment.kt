@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.example.myapplication.data.BackupHelper
@@ -32,6 +33,16 @@ class SettingsFragment : Fragment() {
     private lateinit var preferencesManager: PreferencesManager
     private lateinit var dateFormatHelper: DateFormatHelper
     private lateinit var backupHelper: BackupHelper
+
+    // Launcher para seleccionar archivo JSON
+    private val pickJsonLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let { handleJsonFileSelected(it) }
+    }
+
+    // Launcher para seleccionar archivo DB
+    private val pickDbLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let { handleDbFileSelected(it) }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,7 +77,7 @@ class SettingsFragment : Fragment() {
 
         // Importar desde JSON
         binding.btnImport.setOnClickListener {
-            showImportDialog()
+            openJsonFilePicker()
         }
 
         // Backup de base de datos
@@ -76,7 +87,7 @@ class SettingsFragment : Fragment() {
 
         // Restaurar backup
         binding.btnRestoreDb.setOnClickListener {
-            showRestoreBackupDialog()
+            openDbFilePicker()
         }
 
         // Ver directorio de exportación
@@ -117,6 +128,11 @@ class SettingsFragment : Fragment() {
         // Acerca de
         binding.btnAbout.setOnClickListener {
             showAboutDialog()
+        }
+
+        // Salir de la aplicación
+        binding.btnExitApp.setOnClickListener {
+            exitApp()
         }
     }
 
@@ -329,22 +345,24 @@ class SettingsFragment : Fragment() {
 
     private fun openExportFolder() {
         val exportDir = exportHelper.getExportDirectory()
-        val info = exportHelper.getExportInfo()
 
         val message = """
-            Directorio de exportación:
-            ${info.exportDirectory}
+            📂 Ubicación de archivos:
 
-            Archivos:
-            • ${info.jsonFiles} archivos JSON
-            • ${info.txtFiles} archivos TXT
-            Total: ${info.totalFiles} archivos
+            Exportaciones JSON/TXT:
+            Descargas → TalesDB
 
-            Tamaño total: ${"%.2f".format(info.totalSizeMB)} MB
+            Backups de base de datos:
+            Descargas → TalesDB → backups
+
+            Ruta completa:
+            ${exportDir.absolutePath}
+
+            💡 Puedes acceder a tus archivos desde cualquier explorador de archivos de Android.
         """.trimIndent()
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Información de exportación")
+            .setTitle("📁 Información de archivos")
             .setMessage(message)
             .setPositiveButton("OK", null)
             .show()
@@ -730,7 +748,7 @@ class SettingsFragment : Fragment() {
         val aboutMessage = """
             TalesDB - Gestor Personal de Contenido
 
-            Versión: 1.2.1 (versionCode 3)
+            Versión: 1.2.2 (versionCode 4)
 
             Una aplicación simple y privada para gestionar tus libros, series y películas favoritas.
 
@@ -768,6 +786,312 @@ class SettingsFragment : Fragment() {
         binding.tvStats.text = "Base de datos actual:\n" +
                 "${stats.totalBooks} libros • ${stats.totalSeries} series • ${stats.totalMovies} películas\n" +
                 "Total: ${stats.totalItems} items"
+    }
+
+    /**
+     * DEBUG: Mostrar información del directorio de backups
+     */
+    private fun showBackupDirectoryDebug() {
+        val backupDir = backupHelper.getBackupDirectory()
+        val exportDir = exportHelper.getExportDirectory()
+        val backups = backupHelper.listAvailableBackups()
+        val jsonFiles = importHelper.listAvailableJsonFiles()
+
+        val message = """
+            🔍 DEBUG - Directorios:
+
+            Backup Directory:
+            ${backupDir.absolutePath}
+            Existe: ${backupDir.exists()}
+            Archivos .db encontrados: ${backups.size}
+
+            Export Directory:
+            ${exportDir.absolutePath}
+            Existe: ${exportDir.exists()}
+            Archivos .json encontrados: ${jsonFiles.size}
+
+            Backups:
+            ${backups.joinToString("\n") { "- ${it.name}" }.ifEmpty { "(vacío)" }}
+
+            Exports JSON:
+            ${jsonFiles.joinToString("\n") { "- ${it.name}" }.ifEmpty { "(vacío)" }}
+        """.trimIndent()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("🛠️ Información de Directorios")
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+            .show()
+    }
+
+    /**
+     * Salir de la aplicación con confirmación
+     */
+    private fun exitApp() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Salir de TalesDB")
+            .setMessage("¿Deseas cerrar la aplicación?")
+            .setPositiveButton("Salir") { _, _ ->
+                // Cerrar la actividad principal y terminar la app
+                requireActivity().finishAffinity()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    // ========== STORAGE ACCESS FRAMEWORK (SAF) ==========
+
+    /**
+     * Abrir selector de archivos JSON (con instrucciones)
+     */
+    private fun openJsonFilePicker() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("📁 Importar desde JSON")
+            .setMessage(
+                "Se abrirá el explorador de archivos.\n\n" +
+                "📂 Tus archivos están en:\n" +
+                "Descargas → TalesDB\n\n" +
+                "Selecciona el archivo JSON que quieres importar."
+            )
+            .setPositiveButton("Abrir explorador") { _, _ ->
+                pickJsonLauncher.launch("application/json")
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    /**
+     * Abrir selector de archivos DB (con instrucciones)
+     */
+    private fun openDbFilePicker() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("💾 Restaurar backup")
+            .setMessage(
+                "Se abrirá el explorador de archivos.\n\n" +
+                "📂 Tus backups están en:\n" +
+                "Descargas → TalesDB → backups\n\n" +
+                "Selecciona el archivo .db que quieres restaurar.\n\n" +
+                "⚠️ Esto reemplazará todos los datos actuales."
+            )
+            .setPositiveButton("Abrir explorador") { _, _ ->
+                pickDbLauncher.launch("*/*")
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    /**
+     * Manejar archivo JSON seleccionado
+     */
+    private fun handleJsonFileSelected(uri: Uri) {
+        try {
+            // Copiar el archivo seleccionado a un temp file
+            val inputStream = requireContext().contentResolver.openInputStream(uri)
+            val tempFile = File(requireContext().cacheDir, "temp_import.json")
+
+            inputStream?.use { input ->
+                tempFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            // Validar y mostrar vista previa
+            val validation = importHelper.validateJsonFile(tempFile)
+
+            if (!validation.isValid) {
+                Toast.makeText(
+                    requireContext(),
+                    "❌ ${validation.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+                tempFile.delete()
+                return
+            }
+
+            // Mostrar diálogo de modo de importación
+            showImportModeDialogForFile(tempFile)
+
+        } catch (e: Exception) {
+            Toast.makeText(
+                requireContext(),
+                "❌ Error al leer archivo: ${e.message}",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    /**
+     * Manejar archivo DB seleccionado
+     */
+    private fun handleDbFileSelected(uri: Uri) {
+        try {
+            // Copiar el archivo seleccionado a un temp file
+            val inputStream = requireContext().contentResolver.openInputStream(uri)
+            val tempFile = File(requireContext().cacheDir, "temp_backup.db")
+
+            inputStream?.use { input ->
+                tempFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            // Obtener información del archivo
+            val sizeInMB = tempFile.length() / (1024.0 * 1024.0)
+            val stats = importHelper.getCurrentStats()
+
+            // Confirmar restauración
+            AlertDialog.Builder(requireContext())
+                .setTitle("⚠️ Confirmar restauración")
+                .setMessage(
+                    "Esto reemplazará TODA la base de datos actual.\n\n" +
+                    "Backup a restaurar:\n" +
+                    "Tamaño: ${String.format("%.2f MB", sizeInMB)}\n\n" +
+                    "Datos actuales que se perderán:\n" +
+                    "• ${stats.totalBooks} libros\n" +
+                    "• ${stats.totalSeries} series\n" +
+                    "• ${stats.totalMovies} películas\n\n" +
+                    "¿Estás seguro?"
+                )
+                .setPositiveButton("Sí, restaurar") { _, _ ->
+                    restoreDatabaseFromFile(tempFile)
+                }
+                .setNegativeButton("Cancelar") { _, _ ->
+                    tempFile.delete()
+                }
+                .show()
+
+        } catch (e: Exception) {
+            Toast.makeText(
+                requireContext(),
+                "❌ Error al leer archivo: ${e.message}",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    /**
+     * Mostrar diálogo de modo de importación para archivo temporal
+     */
+    private fun showImportModeDialogForFile(file: File) {
+        val validation = importHelper.validateJsonFile(file)
+        val preview = validation.previewData!!
+        val currentStats = importHelper.getCurrentStats()
+
+        val message = """
+            Datos a importar:
+            • ${preview.totalBooks} libros
+            • ${preview.totalSeries} series
+            • ${preview.totalMovies} películas
+            Total: ${preview.totalItems} items
+
+            Datos actuales en la app:
+            • ${currentStats.totalBooks} libros
+            • ${currentStats.totalSeries} series
+            • ${currentStats.totalMovies} películas
+            Total: ${currentStats.totalItems} items
+
+            ¿Cómo deseas importar?
+        """.trimIndent()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Importar datos")
+            .setMessage(message)
+            .setPositiveButton("Agregar") { _, _ ->
+                importFromJsonFile(file, ImportMode.AGREGAR)
+            }
+            .setNeutralButton("Reemplazar") { _, _ ->
+                confirmReplaceImportForFile(file)
+            }
+            .setNegativeButton("Cancelar") { _, _ ->
+                file.delete()
+            }
+            .show()
+    }
+
+    /**
+     * Confirmar reemplazo para archivo temporal
+     */
+    private fun confirmReplaceImportForFile(file: File) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("⚠️ Confirmar reemplazo")
+            .setMessage("ATENCIÓN: Esto borrará TODOS los datos actuales y los reemplazará con los del archivo.\n\n¿Estás seguro?")
+            .setPositiveButton("Sí, reemplazar") { _, _ ->
+                importFromJsonFile(file, ImportMode.REEMPLAZAR)
+            }
+            .setNegativeButton("No, cancelar") { _, _ ->
+                file.delete()
+            }
+            .show()
+    }
+
+    /**
+     * Importar desde archivo JSON temporal
+     */
+    private fun importFromJsonFile(file: File, mode: ImportMode) {
+        try {
+            Toast.makeText(requireContext(), "Importando...", Toast.LENGTH_SHORT).show()
+
+            val result = importHelper.importFromJson(file, mode)
+
+            if (result.success) {
+                Toast.makeText(
+                    requireContext(),
+                    "✅ ${result.message}\n${result.booksImported} libros, ${result.seriesImported} series, ${result.moviesImported} películas",
+                    Toast.LENGTH_LONG
+                ).show()
+                updateStats()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "❌ ${result.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            // Limpiar archivo temporal
+            file.delete()
+
+        } catch (e: Exception) {
+            Toast.makeText(
+                requireContext(),
+                "❌ Error al importar: ${e.message}",
+                Toast.LENGTH_LONG
+            ).show()
+            file.delete()
+        }
+    }
+
+    /**
+     * Restaurar base de datos desde archivo temporal
+     */
+    private fun restoreDatabaseFromFile(file: File) {
+        Toast.makeText(requireContext(), "Restaurando backup...", Toast.LENGTH_SHORT).show()
+
+        val result = backupHelper.restoreBackup(file)
+
+        if (result.success) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("✅ Backup restaurado")
+                .setMessage(
+                    "${result.message}\n\n" +
+                    "IMPORTANTE: Debes reiniciar la aplicación para que los cambios surtan efecto."
+                )
+                .setPositiveButton("Reiniciar ahora") { _, _ ->
+                    // Reiniciar la actividad
+                    requireActivity().recreate()
+                }
+                .setCancelable(false)
+                .show()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                result.message,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+        // Limpiar archivo temporal
+        file.delete()
     }
 
     override fun onDestroyView() {
