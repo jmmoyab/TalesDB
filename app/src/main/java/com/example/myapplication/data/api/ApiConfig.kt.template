@@ -1,0 +1,113 @@
+package com.example.myapplication.data.api
+
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+
+/**
+ * Configuración centralizada de APIs
+ * v1.4.0 - Autocompletado con Google Books y TMDB
+ *
+ * ⚠️ INSTRUCCIONES DE CONFIGURACIÓN:
+ * 1. Copia este archivo a: ApiConfig.kt (mismo directorio)
+ * 2. Reemplaza los placeholders con tus API Keys reales
+ * 3. NUNCA subas ApiConfig.kt a GitHub (ya está en .gitignore)
+ */
+object ApiConfig {
+
+    // ========== API KEYS ==========
+    // TODO: Obtener estas claves y reemplazar los placeholders
+
+    /**
+     * Google Books API Key
+     * Obtener en: https://console.cloud.google.com
+     * 1. Crear proyecto "TalesDB"
+     * 2. Activar "Google Books API"
+     * 3. Crear credenciales -> API Key
+     * Límite gratuito: 1,000 peticiones/día
+     */
+    const val GOOGLE_BOOKS_KEY = "TU_GOOGLE_BOOKS_API_KEY_AQUI"
+
+    /**
+     * TMDB (The Movie Database) API Key
+     * Obtener en: https://www.themoviedb.org/settings/api
+     * 1. Registrarse en TMDB
+     * 2. Ir a Settings -> API
+     * 3. Request API Key (opción "Developer")
+     * Límite gratuito: 3,000,000 peticiones/mes
+     */
+    const val TMDB_KEY = "TU_TMDB_API_KEY_AQUI"
+
+    // ========== URLs BASE ==========
+
+    const val GOOGLE_BOOKS_BASE_URL = "https://www.googleapis.com/books/v1/"
+    const val TMDB_BASE_URL = "https://api.themoviedb.org/3/"
+
+    // ========== RETROFIT INSTANCES ==========
+
+    /**
+     * Cliente HTTP con logging para debugging
+     */
+    private val okHttpClient: OkHttpClient by lazy {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+    }
+
+    /**
+     * Retrofit instance para Google Books API
+     */
+    val googleBooksRetrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(GOOGLE_BOOKS_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    /**
+     * Retrofit instance para TMDB API
+     */
+    val tmdbRetrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(TMDB_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    /**
+     * Verificar si las API keys están configuradas
+     */
+    fun areApiKeysConfigured(): Boolean {
+        return GOOGLE_BOOKS_KEY != "TU_GOOGLE_BOOKS_API_KEY_AQUI" &&
+                TMDB_KEY != "TU_TMDB_API_KEY_AQUI" &&
+                GOOGLE_BOOKS_KEY.isNotEmpty() &&
+                TMDB_KEY.isNotEmpty()
+    }
+
+    /**
+     * Obtener mensaje de error si las APIs no están configuradas
+     */
+    fun getConfigurationErrorMessage(): String {
+        return """
+            ⚠️ API Keys no configuradas
+
+            Para usar la búsqueda automática necesitas:
+
+            1️⃣ Google Books API Key
+            2️⃣ TMDB API Key
+
+            Consulta CONFIGURAR_API_KEYS.md para instrucciones detalladas.
+        """.trimIndent()
+    }
+}

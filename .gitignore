@@ -1,3 +1,6 @@
+# ⚠️ CRÍTICO: API Keys - NO SUBIR NUNCA
+app/src/main/java/com/example/myapplication/data/api/ApiConfig.kt
+
 # Android
 *.apk
 *.ap_
