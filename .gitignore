@@ -35,5 +35,17 @@ local.properties
 # Archivos de exportacion temporal
 *.txt
 
+# Archivos de desarrollo/sesiones (privados)
+SESION_*.md
+PROXIMA_SESION*.md
+*_SESION*.md
+API_KEY_PREVIO.md
+PROXIMO_PASO*.md
+RESUMEN_*.md
+mañana.md
+antes_seguir.md
+para_segir.md
+estado_proyecto.md
+
 # Gradle Wrapper (opcional - algunos prefieren incluirlo)
 # gradle/wrapper/gradle-wrapper.jar
