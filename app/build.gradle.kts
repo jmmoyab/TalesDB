@@ -12,8 +12,8 @@ android {
         applicationId = "com.example.myapplication"
         minSdk = 21
         targetSdk = 33
-        versionCode = 5
-        versionName = "1.2.3"
+        versionCode = 6
+        versionName = "1.4.0"
 
         vectorDrawables {
             useSupportLibrary = true
@@ -74,6 +74,18 @@ dependencies {
 
     // Gson para serialización JSON
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Retrofit para llamadas HTTP a APIs
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // OkHttp (viene con Retrofit pero agregamos interceptor para logs)
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    // Coroutines para llamadas asíncronas
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
     // Room Database - TEMPORALMENTE DESACTIVADO para compilar en AndroidIDE
     // implementation("androidx.room:room-runtime:2.4.3")

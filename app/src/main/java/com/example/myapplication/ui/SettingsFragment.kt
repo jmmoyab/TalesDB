@@ -832,8 +832,8 @@ class SettingsFragment : Fragment() {
             .setTitle("Salir de TalesDB")
             .setMessage("¿Deseas cerrar la aplicación?")
             .setPositiveButton("Salir") { _, _ ->
-                // Cerrar la actividad principal y terminar la app
-                requireActivity().finishAffinity()
+                // Cerrar la app y removerla de las apps recientes
+                requireActivity().finishAndRemoveTask()
             }
             .setNegativeButton("Cancelar", null)
             .show()

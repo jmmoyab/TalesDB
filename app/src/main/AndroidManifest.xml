@@ -3,6 +3,10 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Permiso de Internet para búsqueda con APIs (v1.4.0+) -->
+    <!-- INTERNET es un permiso "normal" - no requiere aprobación del usuario -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!--
         SIN PERMISOS PELIGROSOS (v1.2.2+)
         - Escribir en Download/ NO requiere permisos (Android 10+)

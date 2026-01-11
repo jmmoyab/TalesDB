@@ -9,6 +9,81 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- ========== SECCIÓN DE BÚSQUEDA CON API ========== -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Buscar en TMDB"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Campo de búsqueda -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Nombre de la serie">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_buscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionSearch" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_buscar_api"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Buscar"
+                android:layout_marginStart="8dp" />
+
+        </LinearLayout>
+
+        <!-- RecyclerView para resultados de búsqueda -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_resultados_busqueda"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
+        <!-- Mensaje de estado de búsqueda -->
+        <TextView
+            android:id="@+id/tv_estado_busqueda"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <!-- Divisor -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="O ingresar manualmente:"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            android:layout_marginBottom="16dp" />
+
+        <!-- ========== FORMULARIO MANUAL ========== -->
+
         <!-- Título -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

@@ -2,13 +2,19 @@ package com.example.myapplication.ui
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.data.Serie
 import com.example.myapplication.data.SerieStatus
+import com.example.myapplication.data.api.TMDBAPI
+import com.example.myapplication.data.api.models.SeriesSearchResult
 import com.example.myapplication.databinding.DialogSerieFormBinding
+import kotlinx.coroutines.launch
 
 class SerieFormDialog : DialogFragment() {
 
@@ -17,6 +23,12 @@ class SerieFormDialog : DialogFragment() {
 
     private var existingSerie: Serie? = null
     private var onSaveListener: ((Serie) -> Unit)? = null
+
+    // API de TMDB
+    private val tmdbAPI = TMDBAPI()
+
+    // Adapter para resultados de búsqueda
+    private lateinit var searchAdapter: SeriesSearchAdapter
 
     companion object {
         private const val ARG_ID = "id"
@@ -63,6 +75,16 @@ class SerieFormDialog : DialogFragment() {
         _binding = DialogSerieFormBinding.inflate(layoutInflater)
 
         loadSerieFromArguments()
+
+        // Configurar búsqueda con API (solo si estamos agregando, no editando)
+        if (existingSerie == null) {
+            setupSeriesSearch()
+        } else {
+            // Ocultar sección de búsqueda si estamos editando
+            binding.inputBuscar.visibility = View.GONE
+            binding.btnBuscarApi.visibility = View.GONE
+        }
+
         setupSpinner()
         fillFormIfEditing()
 
@@ -173,6 +195,113 @@ class SerieFormDialog : DialogFragment() {
 
     fun setOnSaveListener(listener: (Serie) -> Unit) {
         this.onSaveListener = listener
+    }
+
+    // ========== BÚSQUEDA CON TMDB API ==========
+
+    /**
+     * Configurar la búsqueda con TMDB API
+     */
+    private fun setupSeriesSearch() {
+        // Configurar RecyclerView
+        searchAdapter = SeriesSearchAdapter { result ->
+            onSeriesResultSelected(result)
+        }
+        binding.rvResultadosBusqueda.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvResultadosBusqueda.adapter = searchAdapter
+
+        // Botón buscar
+        binding.btnBuscarApi.setOnClickListener {
+            val query = binding.inputBuscar.text.toString().trim()
+            if (query.isNotEmpty()) {
+                searchSeries(query)
+            } else {
+                Toast.makeText(requireContext(), "Escribe un nombre para buscar", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Buscar al presionar Enter en el teclado
+        binding.inputBuscar.setOnEditorActionListener { _, _, _ ->
+            val query = binding.inputBuscar.text.toString().trim()
+            if (query.isNotEmpty()) {
+                searchSeries(query)
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    /**
+     * Buscar series usando TMDB API (con detalles de temporadas)
+     */
+    private fun searchSeries(query: String) {
+        // Mostrar mensaje de "Buscando..."
+        binding.tvEstadoBusqueda.visibility = View.VISIBLE
+        binding.tvEstadoBusqueda.text = "Buscando '$query'..."
+        binding.rvResultadosBusqueda.visibility = View.GONE
+
+        // Lanzar búsqueda en coroutine
+        lifecycleScope.launch {
+            val result = tmdbAPI.searchSeriesWithDetails(query)
+
+            result.onSuccess { series ->
+                if (series.isNotEmpty()) {
+                    // Mostrar resultados
+                    binding.tvEstadoBusqueda.visibility = View.GONE
+                    binding.rvResultadosBusqueda.visibility = View.VISIBLE
+                    searchAdapter.updateResults(series)
+                } else {
+                    // No se encontraron resultados
+                    binding.tvEstadoBusqueda.text = "No se encontraron resultados para '$query'"
+                    binding.rvResultadosBusqueda.visibility = View.GONE
+                }
+            }
+
+            result.onFailure { error ->
+                // Error en la búsqueda
+                binding.tvEstadoBusqueda.text = "Error: ${error.message}"
+                binding.rvResultadosBusqueda.visibility = View.GONE
+                Toast.makeText(
+                    requireContext(),
+                    "Error al buscar: ${error.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    /**
+     * Autocompletar formulario cuando se selecciona un resultado
+     */
+    private fun onSeriesResultSelected(result: SeriesSearchResult) {
+        // Rellenar campos del formulario
+        binding.inputTitulo.setText(result.name)
+        binding.inputAnoEstreno.setText(result.year)
+
+        // Autocompletar temporadas si están disponibles
+        result.numberOfSeasons?.let {
+            binding.inputTemporadasTotales.setText(it.toString())
+        }
+
+        // Autocompletar episodios totales si están disponibles
+        result.numberOfEpisodes?.let { episodes ->
+            binding.inputCapitulosPorTemporada.setText("Total: $episodes episodios")
+        }
+
+        // Ocultar resultados de búsqueda
+        binding.rvResultadosBusqueda.visibility = View.GONE
+        binding.tvEstadoBusqueda.visibility = View.VISIBLE
+        binding.tvEstadoBusqueda.text = "Datos autocompletados. Verifica y ajusta si es necesario."
+
+        // Limpiar campo de búsqueda
+        binding.inputBuscar.setText("")
+
+        Toast.makeText(
+            requireContext(),
+            "Datos autocompletados correctamente",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun onDestroyView() {

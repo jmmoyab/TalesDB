@@ -2,13 +2,19 @@ package com.example.myapplication.ui
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication.data.Book
 import com.example.myapplication.data.BookStatus
+import com.example.myapplication.data.api.GoogleBooksAPI
+import com.example.myapplication.data.api.models.BookSearchResult
 import com.example.myapplication.databinding.DialogBookFormBinding
+import kotlinx.coroutines.launch
 
 class BookFormDialog : DialogFragment() {
 
@@ -17,6 +23,12 @@ class BookFormDialog : DialogFragment() {
 
     private var existingBook: Book? = null
     private var onSaveListener: ((Book) -> Unit)? = null
+
+    // API de Google Books
+    private val googleBooksAPI = GoogleBooksAPI()
+
+    // Adapter para resultados de búsqueda
+    private lateinit var searchAdapter: BookSearchAdapter
 
     companion object {
         private const val ARG_BOOK_ID = "book_id"
@@ -58,6 +70,15 @@ class BookFormDialog : DialogFragment() {
 
         // Cargar datos si estamos editando
         loadBookFromArguments()
+
+        // Configurar búsqueda con API (solo si estamos agregando, no editando)
+        if (existingBook == null) {
+            setupBookSearch()
+        } else {
+            // Ocultar sección de búsqueda si estamos editando
+            binding.inputBuscar.visibility = View.GONE
+            binding.btnBuscarApi.visibility = View.GONE
+        }
 
         // Configurar spinner de estados
         setupSpinner()
@@ -171,6 +192,104 @@ class BookFormDialog : DialogFragment() {
 
     fun setOnSaveListener(listener: (Book) -> Unit) {
         this.onSaveListener = listener
+    }
+
+    // ========== BÚSQUEDA CON GOOGLE BOOKS API ==========
+
+    /**
+     * Configurar la búsqueda con Google Books API
+     */
+    private fun setupBookSearch() {
+        // Configurar RecyclerView
+        searchAdapter = BookSearchAdapter { result ->
+            onBookResultSelected(result)
+        }
+        binding.rvResultadosBusqueda.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvResultadosBusqueda.adapter = searchAdapter
+
+        // Botón buscar
+        binding.btnBuscarApi.setOnClickListener {
+            val query = binding.inputBuscar.text.toString().trim()
+            if (query.isNotEmpty()) {
+                searchBooks(query)
+            } else {
+                Toast.makeText(requireContext(), "Escribe un título para buscar", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Buscar al presionar Enter en el teclado
+        binding.inputBuscar.setOnEditorActionListener { _, _, _ ->
+            val query = binding.inputBuscar.text.toString().trim()
+            if (query.isNotEmpty()) {
+                searchBooks(query)
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    /**
+     * Buscar libros usando Google Books API
+     */
+    private fun searchBooks(query: String) {
+        // Mostrar mensaje de "Buscando..."
+        binding.tvEstadoBusqueda.visibility = View.VISIBLE
+        binding.tvEstadoBusqueda.text = "Buscando '$query'..."
+        binding.rvResultadosBusqueda.visibility = View.GONE
+
+        // Lanzar búsqueda en coroutine
+        lifecycleScope.launch {
+            val result = googleBooksAPI.searchBooks(query, maxResults = 10)
+
+            result.onSuccess { books ->
+                if (books.isNotEmpty()) {
+                    // Mostrar resultados
+                    binding.tvEstadoBusqueda.visibility = View.GONE
+                    binding.rvResultadosBusqueda.visibility = View.VISIBLE
+                    searchAdapter.updateResults(books)
+                } else {
+                    // No se encontraron resultados
+                    binding.tvEstadoBusqueda.text = "No se encontraron resultados para '$query'"
+                    binding.rvResultadosBusqueda.visibility = View.GONE
+                }
+            }
+
+            result.onFailure { error ->
+                // Error en la búsqueda
+                binding.tvEstadoBusqueda.text = "Error: ${error.message}"
+                binding.rvResultadosBusqueda.visibility = View.GONE
+                Toast.makeText(
+                    requireContext(),
+                    "Error al buscar: ${error.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    /**
+     * Autocompletar formulario cuando se selecciona un resultado
+     */
+    private fun onBookResultSelected(result: BookSearchResult) {
+        // Rellenar campos del formulario
+        binding.inputTitulo.setText(result.title)
+        binding.inputAutor.setText(result.author)
+        binding.inputPaginas.setText(result.pages.toString())
+
+        // Ocultar resultados de búsqueda
+        binding.rvResultadosBusqueda.visibility = View.GONE
+        binding.tvEstadoBusqueda.visibility = View.VISIBLE
+        binding.tvEstadoBusqueda.text = "Datos autocompletados. Verifica y ajusta si es necesario."
+
+        // Limpiar campo de búsqueda
+        binding.inputBuscar.setText("")
+
+        Toast.makeText(
+            requireContext(),
+            "Datos autocompletados correctamente",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun onDestroyView() {
