@@ -25,11 +25,31 @@
 - Búsqueda mejorada con duración de películas y episodios de series
 - Corrección de bugs menores
 
+## ⚠️ Importante: API Keys
+
+**El APK descargado desde GitHub NO incluye API Keys.**
+
+Para usar la búsqueda automática de libros, películas y series, necesitas:
+
+1. Obtener tus propias API Keys **gratuitas**:
+   - Google Books API (1,000 búsquedas/día gratis)
+   - TMDB API (3,000,000 peticiones/mes gratis)
+
+2. Configurarlas en la aplicación
+
+**Ver [CONFIGURAR_API_KEYS.md](CONFIGURAR_API_KEYS.md) para instrucciones completas** (15-20 minutos)
+
+### ¿Por qué no incluye API Keys?
+
+Para evitar abuso de límites. Cada usuario usa su propia cuota de búsquedas gratuitas.
+
+**Nota:** Si usas la aplicación solo para gestionar manualmente tu colección (sin búsqueda automática), las API Keys no son necesarias.
+
 ## Requisitos
 
 - Android 5.0 (Lollipop) o superior
 - Conexión a Internet (solo para búsqueda automática)
-- **API Keys propias** (Google Books + TMDB) - Ver sección de configuración
+- **API Keys propias** (opcional, solo para búsqueda automática)
 
 ## Instalación
 
@@ -38,7 +58,8 @@
 1. Descarga el APK desde [Releases](https://github.com/jmmoyab/TalesDB/releases)
 2. Habilita "Orígenes desconocidos" en tu dispositivo
 3. Instala el APK
-4. Consulta `COMO_INSTALAR.md` para instrucciones detalladas
+4. (Opcional) Configura tus API Keys para habilitar búsqueda automática
+5. Consulta [COMO_INSTALAR.md](COMO_INSTALAR.md) para instrucciones detalladas
 
 ### Para desarrolladores:
 
@@ -153,15 +174,35 @@ Esta aplicación es de **distribución gratuita** para uso personal y familiar.
 - Hasta 15-20 usuarios: 100% seguro
 - Más de 50 usuarios: Considerar upgrade de APIs
 
+## Documentación para Desarrolladores
+
+Si quieres contribuir o compilar tu propia versión:
+
+- **[README_DESARROLLO.md](README_DESARROLLO.md)** - Guía completa de desarrollo
+  - Configuración del entorno
+  - Gestión de API Keys
+  - Compilar APKs (públicos y privados)
+  - Scripts automáticos
+  - Workflow completo
+
+- **[CONFIGURAR_API_KEYS.md](CONFIGURAR_API_KEYS.md)** - Obtener API Keys
+
+- **Scripts de compilación:**
+  - `compile-public.sh` - Compilación automática
+  - `compile-public-manual.sh` - Para AndroidIDE
+
 ## Contribuir
 
 Las contribuciones son bienvenidas. Por favor:
 
 1. Fork el proyecto
 2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add: AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+3. Lee [README_DESARROLLO.md](README_DESARROLLO.md) primero
+4. Commit tus cambios (`git commit -m 'Add: AmazingFeature'`)
+5. Push a la rama (`git push origin feature/AmazingFeature`)
+6. Abre un Pull Request
+
+**Nota:** NUNCA incluyas API Keys en tus commits. Ver README_DESARROLLO.md para más detalles.
 
 ## Licencia
 
