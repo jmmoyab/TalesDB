@@ -745,10 +745,15 @@ class SettingsFragment : Fragment() {
      * Mostrar diálogo "Acerca de" con información de la app
      */
     private fun showAboutDialog() {
+        // Obtener versión dinámica desde PackageInfo
+        val packageInfo = requireContext().packageManager.getPackageInfo(requireContext().packageName, 0)
+        val versionName = packageInfo.versionName
+        val versionCode = packageInfo.longVersionCode.toInt()
+
         val aboutMessage = """
             TalesDB - Gestor Personal de Contenido
 
-            Versión: 1.2.3 (versionCode 5)
+            Versión: $versionName (versionCode $versionCode)
 
             Una aplicación simple y privada para gestionar tus libros, series y películas favoritas.
 

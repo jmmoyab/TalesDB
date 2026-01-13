@@ -12,7 +12,7 @@ android {
         applicationId = "com.example.myapplication"
         minSdk = 21
         targetSdk = 33
-        versionCode = 6
+        versionCode = 7
         versionName = "1.4.0"
 
         vectorDrawables {
