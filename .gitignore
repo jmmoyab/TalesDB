@@ -35,17 +35,30 @@ local.properties
 # Archivos de exportacion temporal
 *.txt
 
-# Archivos de desarrollo/sesiones (privados)
+# Archivos de desarrollo/sesiones (privados - mantener solo localmente)
 SESION_*.md
 PROXIMA_SESION*.md
 *_SESION*.md
+RESUMEN_*.md
+PLAN_*.md
 API_KEY_PREVIO.md
 PROXIMO_PASO*.md
-RESUMEN_*.md
 mañana.md
 antes_seguir.md
 para_segir.md
 estado_proyecto.md
+
+# Documentación interna de distribución (privado)
+INSTRUCCIONES_CREAR_RELEASE.md
+INSTRUCCIONES_GOOGLE_DRIVE.md
+COMPILAR_VERSION_PUBLICA.md
+PLAN_DISTRIBUCION_MIXTA.md
+
+# Scripts de emergencia (privados)
+EMERGENCIA_*.sh
+
+# Release notes (van en GitHub Releases, no en repo)
+RELEASE_NOTES_*.md
 
 # Gradle Wrapper (opcional - algunos prefieren incluirlo)
 # gradle/wrapper/gradle-wrapper.jar

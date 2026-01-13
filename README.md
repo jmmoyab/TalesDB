@@ -66,21 +66,34 @@ Para evitar abuso de límites. Cada usuario usa su propia cuota de búsquedas gr
 ```bash
 # Clonar el repositorio
 git clone https://github.com/jmmoyab/TalesDB.git
-
-# Navegar al directorio
 cd TalesDB
 
 # Configurar API Keys (IMPORTANTE)
-# 1. Copia el archivo template
 cp app/src/main/java/com/example/myapplication/data/api/ApiConfig.kt.template \
    app/src/main/java/com/example/myapplication/data/api/ApiConfig.kt
 
-# 2. Edita ApiConfig.kt y agrega tus API Keys
+# Edita ApiConfig.kt y agrega tus API Keys
 # Ver CONFIGURAR_API_KEYS.md para obtener las keys
-
-# Compilar con Android Studio o Gradle
-./gradlew assembleDebug
 ```
+
+**Compilar:**
+
+**Opción A: Android Studio (Recomendado para PC)**
+1. Abre el proyecto en Android Studio
+2. Build → Make Project
+3. Run → Run 'app'
+
+**Opción B: AndroidIDE (Para desarrollo en móvil)**
+1. Abre el proyecto en AndroidIDE
+2. Build → Assemble Debug/Release
+
+**Opción C: Terminal con Gradle**
+```bash
+./gradlew assembleDebug    # APK de desarrollo
+./gradlew assembleRelease  # APK de producción
+```
+
+Ver [README_DESARROLLO.md](README_DESARROLLO.md) para guía completa de desarrollo.
 
 ## Configuración de API Keys
 

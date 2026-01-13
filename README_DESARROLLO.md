@@ -2,23 +2,98 @@
 
 ## Índice
 
-1. [Configuración del Entorno](#configuración-del-entorno)
-2. [Gestión de API Keys](#gestión-de-api-keys)
-3. [Compilar APKs](#compilar-apks)
-4. [Distribución](#distribución)
-5. [Estructura del Proyecto](#estructura-del-proyecto)
-6. [Workflow de Desarrollo](#workflow-de-desarrollo)
+1. [IDEs Soportados](#ides-soportados)
+2. [Configuración del Entorno](#configuración-del-entorno)
+3. [Gestión de API Keys](#gestión-de-api-keys)
+4. [Compilar APKs](#compilar-apks)
+5. [Distribución](#distribución)
+6. [Estructura del Proyecto](#estructura-del-proyecto)
+7. [Workflow de Desarrollo](#workflow-de-desarrollo)
+
+---
+
+## IDEs Soportados
+
+Este proyecto puede compilarse con cualquiera de estos IDEs:
+
+### Android Studio (Recomendado para PC)
+
+**Descargar:** https://developer.android.com/studio
+
+**Ventajas:**
+- IDE oficial de Android
+- Herramientas completas de desarrollo
+- Depurador potente
+- Emulador integrado
+- Soporte completo de Gradle
+
+**Compilación:**
+```
+File → Open → Selecciona el proyecto
+Build → Make Project
+Run → Run 'app'
+```
+
+**Gradle:** Funciona automáticamente desde el IDE o terminal.
+
+---
+
+### AndroidIDE (Para desarrollo en móvil Android)
+
+**Descargar:** https://m.androidide.com/
+
+**Ventajas:**
+- Desarrollar directamente desde Android
+- No necesitas PC
+- Compilación completa en el móvil
+- Ideal para desarrollo sobre la marcha
+
+**Compilación:**
+```
+Abrir proyecto en AndroidIDE
+Build → Assemble Debug (desarrollo)
+Build → Assemble Release (producción)
+```
+
+**Nota importante:**
+- El comando `./gradlew` puede no funcionar directamente en terminal
+- Usa la interfaz de AndroidIDE para compilar
+- Los scripts `compile-public*.sh` están optimizados para AndroidIDE
+
+---
+
+### Terminal / Gradle (Cualquier sistema)
+
+**Requisitos:**
+- JDK 11+
+- Android SDK instalado
+- Gradle wrapper incluido en el proyecto
+
+**Comandos:**
+```bash
+./gradlew assembleDebug      # APK de desarrollo
+./gradlew assembleRelease    # APK de producción
+./gradlew clean              # Limpiar build
+```
+
+**Nota:** Si estás en AndroidIDE y estos comandos no funcionan, usa los scripts helper:
+```bash
+./compile-public-manual.sh prepare   # Prepara código sin keys
+# [Compilar en AndroidIDE]
+./compile-public-manual.sh package   # Empaqueta APK
+./compile-public-manual.sh restore   # Restaura keys
+```
 
 ---
 
 ## Configuración del Entorno
 
-### Requisitos
+### Requisitos Generales
 
-- **AndroidIDE** (versión 2.x o superior)
-- Android SDK 21+
+- Android SDK 21+ (Lollipop)
 - Java 11+
 - Git configurado
+- **IDE:** Android Studio, AndroidIDE, o cualquier editor + Gradle
 
 ### Clonar el Proyecto
 
