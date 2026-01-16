@@ -156,7 +156,7 @@ class MovieDao(private val db: SQLiteDatabase) {
         val cursor = db.query(
             TABLE_NAME,
             null,
-            "titulo LIKE ? OR plataformas LIKE ? OR saga_titulo LIKE ?",
+            "titulo LIKE ? OR plataforma LIKE ? OR saga_titulo LIKE ?",
             arrayOf(searchQuery, searchQuery, searchQuery),
             null,
             null,
