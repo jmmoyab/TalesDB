@@ -62,3 +62,7 @@ RELEASE_NOTES_*.md
 
 # Gradle Wrapper (opcional - algunos prefieren incluirlo)
 # gradle/wrapper/gradle-wrapper.jar
+
+# Keystore de firma (privado)
+app/keystore/
+*.jks
