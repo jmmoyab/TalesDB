@@ -37,7 +37,7 @@ Para usar la búsqueda automática de libros, películas y series, necesitas:
 
 2. Configurarlas en la aplicación
 
-**Ver [CONFIGURAR_API_KEYS.md](CONFIGURAR_API_KEYS.md) para instrucciones completas** (15-20 minutos)
+**Ver [CONFIGURAR_API_KEYS.md](docs/CONFIGURAR_API_KEYS.md) para instrucciones completas** (15-20 minutos)
 
 ### ¿Por qué no incluye API Keys?
 
@@ -59,7 +59,7 @@ Para evitar abuso de límites. Cada usuario usa su propia cuota de búsquedas gr
 2. Habilita "Orígenes desconocidos" en tu dispositivo
 3. Instala el APK
 4. (Opcional) Configura tus API Keys para habilitar búsqueda automática
-5. Consulta [COMO_INSTALAR.md](COMO_INSTALAR.md) para instrucciones detalladas
+5. Consulta [COMO_INSTALAR.md](docs/COMO_INSTALAR.md) para instrucciones detalladas
 
 ### Para desarrolladores:
 
@@ -93,7 +93,7 @@ cp app/src/main/java/com/example/myapplication/data/api/ApiConfig.kt.template \
 ./gradlew assembleRelease  # APK de producción
 ```
 
-Ver [README_DESARROLLO.md](README_DESARROLLO.md) para guía completa de desarrollo.
+Ver [README_DESARROLLO.md](docs/README_DESARROLLO.md) para guía completa de desarrollo.
 
 ## Configuración de API Keys
 
@@ -123,8 +123,10 @@ TalesDB/
 │   │   ├── ui/             # Actividades y UI
 │   │   └── utils/          # Utilidades
 │   └── build.gradle        # Dependencias
-├── CONFIGURAR_API_KEYS.md  # Guía de configuración
-├── COMO_INSTALAR.md        # Guía de instalación
+├── docs/                   # Documentación
+│   ├── COMO_INSTALAR.md
+│   ├── CONFIGURAR_API_KEYS.md
+│   └── README_DESARROLLO.md
 └── README.md               # Este archivo
 ```
 
@@ -191,14 +193,14 @@ Esta aplicación es de **distribución gratuita** para uso personal y familiar.
 
 Si quieres contribuir o compilar tu propia versión:
 
-- **[README_DESARROLLO.md](README_DESARROLLO.md)** - Guía completa de desarrollo
+- **[README_DESARROLLO.md](docs/README_DESARROLLO.md)** - Guía completa de desarrollo
   - Configuración del entorno
   - Gestión de API Keys
   - Compilar APKs (públicos y privados)
   - Scripts automáticos
   - Workflow completo
 
-- **[CONFIGURAR_API_KEYS.md](CONFIGURAR_API_KEYS.md)** - Obtener API Keys
+- **[CONFIGURAR_API_KEYS.md](docs/CONFIGURAR_API_KEYS.md)** - Obtener API Keys
 
 - **Scripts de compilación:**
   - `compile-public.sh` - Compilación automática
@@ -210,7 +212,7 @@ Las contribuciones son bienvenidas. Por favor:
 
 1. Fork el proyecto
 2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Lee [README_DESARROLLO.md](README_DESARROLLO.md) primero
+3. Lee [README_DESARROLLO.md](docs/README_DESARROLLO.md) primero
 4. Commit tus cambios (`git commit -m 'Add: AmazingFeature'`)
 5. Push a la rama (`git push origin feature/AmazingFeature`)
 6. Abre un Pull Request

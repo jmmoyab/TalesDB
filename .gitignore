@@ -68,3 +68,4 @@ app/keystore/
 *.jks
 # Instrucciones privadas de distribución
 INSTRUCCIONES_FAMILIA.md
+capturas/*.jpg
