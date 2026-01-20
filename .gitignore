@@ -66,3 +66,5 @@ RELEASE_NOTES_*.md
 # Keystore de firma (privado)
 app/keystore/
 *.jks
+# Instrucciones privadas de distribución
+INSTRUCCIONES_FAMILIA.md
