@@ -33,129 +33,153 @@ class StatsFragment : Fragment() {
     }
 
     private fun loadStats() {
+        val binding = _binding ?: return
+        if (!isAdded) return
+
+        // Cada sección en su propio try-catch para que si una falla, las demás sigan cargando
+
+        // Totales generales
         try {
-            // Validar que el binding y el fragmento estén OK
-            val binding = _binding ?: return
-            if (!isAdded) return
+            binding.textTotalBooks.text = contentManager.bookDao.getAll().size.toString()
+            binding.textTotalSeries.text = contentManager.serieDao.getAll().size.toString()
+            binding.textTotalMovies.text = contentManager.movieDao.getAll().size.toString()
+        } catch (e: Exception) {
+            Log.e("StatsFragment", "Error loading totals", e)
+        }
 
-            // Totales generales
-            val totalBooks = contentManager.bookDao.getAll().size
-            val totalSeries = contentManager.serieDao.getAll().size
-            val totalMovies = contentManager.movieDao.getAll().size
-
-            binding.textTotalBooks.text = totalBooks.toString()
-            binding.textTotalSeries.text = totalSeries.toString()
-            binding.textTotalMovies.text = totalMovies.toString()
-
-            // Estadísticas de libros por estado
+        // Estadísticas de libros por estado
+        try {
             val bookStats = contentManager.bookDao.getCountByEstado()
-            val booksStatsText = buildString {
+            binding.textBooksStats.text = buildString {
                 bookStats.forEach { (estado, count) ->
                     append("• ${formatEstado(estado.name)}: $count\n")
                 }
                 if (isEmpty()) append("No hay libros registrados")
-            }
-            binding.textBooksStats.text = booksStatsText.trim()
+            }.trim()
+        } catch (e: Exception) {
+            Log.e("StatsFragment", "Error loading book stats", e)
+        }
 
-            // Estadísticas de series por estado
+        // Estadísticas de series por estado
+        try {
             val seriesStats = contentManager.serieDao.getCountByEstado()
-            val seriesStatsText = buildString {
+            binding.textSeriesStats.text = buildString {
                 seriesStats.forEach { (estado, count) ->
                     append("• ${formatEstado(estado.name)}: $count\n")
                 }
                 if (isEmpty()) append("No hay series registradas")
-            }
-            binding.textSeriesStats.text = seriesStatsText.trim()
+            }.trim()
+        } catch (e: Exception) {
+            Log.e("StatsFragment", "Error loading series stats", e)
+        }
 
-            // Estadísticas de películas por estado
+        // Estadísticas de películas por estado
+        try {
             val moviesStats = contentManager.movieDao.getCountByEstado()
-            val moviesStatsText = buildString {
+            binding.textMoviesStats.text = buildString {
                 moviesStats.forEach { (estado, count) ->
                     append("• ${formatEstado(estado.name)}: $count\n")
                 }
                 if (isEmpty()) append("No hay películas registradas")
-            }
-            binding.textMoviesStats.text = moviesStatsText.trim()
+            }.trim()
+        } catch (e: Exception) {
+            Log.e("StatsFragment", "Error loading movie stats", e)
+        }
 
-            // Estadísticas de Libros por Año
+        // Estadísticas de Libros por Año
+        try {
             val booksYearStats = contentManager.bookDao.getCountByYear()
-            val booksYearText = buildString {
+            binding.textBooksYear.text = buildString {
                 booksYearStats.entries
                     .sortedByDescending { it.key }
                     .forEach { (year, count) ->
                         append("• $year: $count libros\n")
                     }
                 if (isEmpty()) append("No hay libros con fechas registradas")
-            }
-            binding.textBooksYear.text = booksYearText.trim()
+            }.trim()
+        } catch (e: Exception) {
+            Log.e("StatsFragment", "Error loading books by year", e)
+        }
 
-            // Estadísticas de Series por Año
+        // Estadísticas de Series por Año
+        try {
             val seriesYearStats = contentManager.serieDao.getCountByYear()
-            val seriesYearText = buildString {
+            binding.textSeriesYear.text = buildString {
                 seriesYearStats.entries
                     .sortedByDescending { it.key }
                     .forEach { (year, count) ->
                         append("• $year: $count series\n")
                     }
                 if (isEmpty()) append("No hay series con fechas registradas")
-            }
-            binding.textSeriesYear.text = seriesYearText.trim()
+            }.trim()
+        } catch (e: Exception) {
+            Log.e("StatsFragment", "Error loading series by year", e)
+        }
 
-            // Estadísticas de Películas por Año
+        // Estadísticas de Películas por Año
+        try {
             val moviesYearStats = contentManager.movieDao.getCountByYear()
-            val moviesYearText = buildString {
+            binding.textMoviesYear.text = buildString {
                 moviesYearStats.entries
                     .sortedByDescending { it.key }
                     .forEach { (year, count) ->
                         append("• $year: $count películas\n")
                     }
                 if (isEmpty()) append("No hay películas con fechas registradas")
-            }
-            binding.textMoviesYear.text = moviesYearText.trim()
+            }.trim()
+        } catch (e: Exception) {
+            Log.e("StatsFragment", "Error loading movies by year", e)
+        }
 
-            // Estadísticas de Libros por Mes
+        // Estadísticas de Libros por Mes
+        try {
             val booksMonthStats = contentManager.bookDao.getCountByMonth()
-            val booksMonthText = buildString {
+            binding.textBooksMonth.text = buildString {
                 booksMonthStats.entries
                     .sortedByDescending { it.key }
-                    .take(12)  // Últimos 12 meses
+                    .take(12)
                     .forEach { (month, count) ->
                         val formattedMonth = formatMonth(month)
                         append("• $formattedMonth: $count libros\n")
                     }
                 if (isEmpty()) append("No hay libros con fechas registradas")
-            }
-            binding.textBooksMonth.text = booksMonthText.trim()
+            }.trim()
+        } catch (e: Exception) {
+            Log.e("StatsFragment", "Error loading books by month", e)
+        }
 
-            // Estadísticas de Series por Mes
+        // Estadísticas de Series por Mes
+        try {
             val seriesMonthStats = contentManager.serieDao.getCountByMonth()
-            val seriesMonthText = buildString {
+            binding.textSeriesMonth.text = buildString {
                 seriesMonthStats.entries
                     .sortedByDescending { it.key }
-                    .take(12)  // Últimos 12 meses
+                    .take(12)
                     .forEach { (month, count) ->
                         val formattedMonth = formatMonth(month)
                         append("• $formattedMonth: $count series\n")
                     }
                 if (isEmpty()) append("No hay series con fechas registradas")
-            }
-            binding.textSeriesMonth.text = seriesMonthText.trim()
+            }.trim()
+        } catch (e: Exception) {
+            Log.e("StatsFragment", "Error loading series by month", e)
+        }
 
-            // Estadísticas de Películas por Mes
+        // Estadísticas de Películas por Mes
+        try {
             val moviesMonthStats = contentManager.movieDao.getCountByMonth()
-            val moviesMonthText = buildString {
+            binding.textMoviesMonth.text = buildString {
                 moviesMonthStats.entries
                     .sortedByDescending { it.key }
-                    .take(12)  // Últimos 12 meses
+                    .take(12)
                     .forEach { (month, count) ->
                         val formattedMonth = formatMonth(month)
                         append("• $formattedMonth: $count películas\n")
                     }
                 if (isEmpty()) append("No hay películas con fechas registradas")
-            }
-            binding.textMoviesMonth.text = moviesMonthText.trim()
+            }.trim()
         } catch (e: Exception) {
-            Log.e("StatsFragment", "Error loading stats", e)
+            Log.e("StatsFragment", "Error loading movies by month", e)
         }
     }
 

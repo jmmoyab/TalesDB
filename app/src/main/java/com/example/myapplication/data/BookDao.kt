@@ -175,12 +175,21 @@ class BookDao(private val db: SQLiteDatabase) {
     // Estadísticas: Libros leídos por año
     fun getCountByYear(): Map<String, Int> {
         val stats = mutableMapOf<String, Int>()
+        // Soportar tanto formato ISO (YYYY-MM-DD) como DD/MM/YYYY
         val cursor = db.rawQuery(
             """
-            SELECT strftime('%Y', fecha_fin) as year, COUNT(*) as count
+            SELECT
+                CASE
+                    WHEN fecha_fin LIKE '____-__-__' THEN strftime('%Y', fecha_fin)
+                    WHEN fecha_fin LIKE '__/__/____' THEN substr(fecha_fin, 7, 4)
+                    WHEN fecha_fin LIKE '__-__-____' THEN substr(fecha_fin, 7, 4)
+                    ELSE NULL
+                END as year,
+                COUNT(*) as count
             FROM $TABLE_NAME
-            WHERE fecha_fin IS NOT NULL
+            WHERE fecha_fin IS NOT NULL AND fecha_fin != ''
             GROUP BY year
+            HAVING year IS NOT NULL
             ORDER BY year DESC
             """.trimIndent(),
             null
@@ -188,7 +197,7 @@ class BookDao(private val db: SQLiteDatabase) {
         cursor.use {
             if (it.moveToFirst()) {
                 do {
-                    val year = it.getString(0)
+                    val year = it.getString(0) ?: continue
                     val count = it.getInt(1)
                     stats[year] = count
                 } while (it.moveToNext())
@@ -200,12 +209,21 @@ class BookDao(private val db: SQLiteDatabase) {
     // Estadísticas: Libros leídos por mes
     fun getCountByMonth(): Map<String, Int> {
         val stats = mutableMapOf<String, Int>()
+        // Soportar tanto formato ISO (YYYY-MM-DD) como DD/MM/YYYY
         val cursor = db.rawQuery(
             """
-            SELECT strftime('%Y-%m', fecha_fin) as month, COUNT(*) as count
+            SELECT
+                CASE
+                    WHEN fecha_fin LIKE '____-__-__' THEN strftime('%Y-%m', fecha_fin)
+                    WHEN fecha_fin LIKE '__/__/____' THEN substr(fecha_fin, 7, 4) || '-' || substr(fecha_fin, 4, 2)
+                    WHEN fecha_fin LIKE '__-__-____' THEN substr(fecha_fin, 7, 4) || '-' || substr(fecha_fin, 4, 2)
+                    ELSE NULL
+                END as month,
+                COUNT(*) as count
             FROM $TABLE_NAME
-            WHERE fecha_fin IS NOT NULL
+            WHERE fecha_fin IS NOT NULL AND fecha_fin != ''
             GROUP BY month
+            HAVING month IS NOT NULL
             ORDER BY month DESC
             """.trimIndent(),
             null
@@ -213,7 +231,7 @@ class BookDao(private val db: SQLiteDatabase) {
         cursor.use {
             if (it.moveToFirst()) {
                 do {
-                    val month = it.getString(0)
+                    val month = it.getString(0) ?: continue
                     val count = it.getInt(1)
                     stats[month] = count
                 } while (it.moveToNext())
